@@ -37,11 +37,8 @@ public class AutonomousSample extends OpMode {
     List<LynxModule> allHubs;
     public ElapsedTime Timer = new ElapsedTime();
     private Timer pathTimer, actionTimer, opmodeTimer;
-    private int pathState;
-    private final Pose examplePose = new Pose(17.43, 120.37, Math.toRadians(-36));
     public Pose startPose;
     public ComponentShell comps;
-    public int Shots = 0;
     private TelemetryManager telemetryM;
     public ComponentShell.Alliance alliance;
     private boolean stop = false;
@@ -159,11 +156,9 @@ public class AutonomousSample extends OpMode {
         if(!stop) {
             autonomousPathUpdate();
         }
-        telemetryM.debug("Shots", Shots);
 
         comps.update();
 
-        telemetryM.debug("path state", pathState);
         telemetryM.debug("x", follower.pose().x());
         telemetryM.debug("y", follower.pose().y());
         telemetryM.debug("heading", follower.pose().heading());
