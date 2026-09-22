@@ -38,7 +38,7 @@ public class BallGrabberTest extends OpMode {
 
 
     public void autonomousPathUpdate() {
-        //Pose target = comps.limelight.getBallPoses();k
+        //Pose target = comps.limelight.getBallPoses();
     }
 
     @Override
