@@ -38,7 +38,12 @@ public class BallGrabberTest extends OpMode {
 
 
     public void autonomousPathUpdate() {
-        //Pose target = comps.limelight.getBallPoses();k
+        if(!follower.isBusy()) {
+            Pose target = comps.limelight.getBallPoses().get(0);
+            double heading = Math.atan2(follower.pose().y() - target.y(), follower.pose().x() - target.x());
+            Path path = Paths.line(follower.pose(), target).linear(follower.pose().heading(), heading);
+            follower.follow(path);
+        }
     }
 
     @Override
