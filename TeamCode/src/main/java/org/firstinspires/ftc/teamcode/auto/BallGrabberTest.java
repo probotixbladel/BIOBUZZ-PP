@@ -31,7 +31,7 @@ public class BallGrabberTest extends OpMode {
     List<LynxModule> allHubs;
     public ElapsedTime Timer = new ElapsedTime();
     private Timer pathTimer, actionTimer, opmodeTimer;
-    public Pose startPose;
+    public Pose startPose = poseFac.of(8, 8, Math.toRadians(0));
     public ComponentShell comps;
     private TelemetryManager telemetryM;
     public ComponentShell.Alliance alliance;
@@ -39,10 +39,16 @@ public class BallGrabberTest extends OpMode {
 
     public void autonomousPathUpdate() {
         if(!follower.isBusy()) {
-            Pose target = comps.limelight.getBallPoses().get(0);
-            double heading = Math.atan2(follower.pose().y() - target.y(), follower.pose().x() - target.x());
-            Path path = Paths.line(follower.pose(), target).linear(follower.pose().heading(), heading);
-            follower.follow(path);
+            List<Pose> ballPoses = comps.limelight.getBallPoses();
+            if(!ballPoses.isEmpty()) {
+                Pose target = ballPoses.get(0);
+                double heading = Math.atan2(follower.pose().y() - target.y(), follower.pose().x() - target.x());
+                Path path = Paths.line(follower.pose(), target).linear(follower.pose().heading(), heading);
+                follower.follow(path);
+            }
+            else {
+                follower.hold(poseFac.of(follower.pose().x(), follower.pose().y(), follower.pose().heading() + Math.toRadians(15)));
+            }
         }
     }
 
@@ -60,7 +66,7 @@ public class BallGrabberTest extends OpMode {
         pathTimer.reset();
 
         follower = Constants.createFollower(hardwareMap);
-        //follower.setStartingPose(startPose); TODO: fix this shii
+        follower.setPose(startPose);
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
         comps = new ComponentShell(hardwareMap, follower, telemetryM, alliance, poseFac, true);
     }
