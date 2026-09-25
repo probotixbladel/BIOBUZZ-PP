@@ -35,26 +35,50 @@ public class BallGrabberTest extends OpMode {
     public ComponentShell comps;
     private TelemetryManager telemetryM;
     public ComponentShell.Alliance alliance;
-    private boolean isSeeingBall = false;
+    private Pose lastBallPose;
 
 
     public void autonomousPathUpdate() {
         List<Pose> ballPoses = comps.limelight.getBallPoses();
-        if(!follower.isBusy() || !isSeeingBall) {
+        if(!follower.isBusy() || pathTimer.seconds() > 5) {
             if(!ballPoses.isEmpty()) {
                 Pose target = ballPoses.get(0);
                 double heading = Math.atan2(follower.pose().y() - target.y(), follower.pose().x() - target.x());
                 Path path = Paths.line(follower.pose(), target).linear(follower.pose().heading(), heading);
                 follower.follow(path);
-                isSeeingBall = true;
+                pathTimer.reset();
+                lastBallPose = target;
             }
             else {
-                follower.hold(poseFac.of(follower.pose().x(), follower.pose().y(), follower.pose().heading() + Math.toRadians(180)));
+                double heading = Math.atan2(follower.pose().y() - lastBallPose.y(), follower.pose().x() - lastBallPose.x());
+                Path path = Paths.line(follower.pose(), lastBallPose).linear(follower.pose().heading(), heading);
+                follower.follow(path);
+                pathTimer.reset();
             }
         }
-        if (ballPoses.isEmpty() && isSeeingBall) {
-            isSeeingBall = false;
+    }
+
+    private double distance(Pose a, Pose b) {
+        return Math.sqrt((a.x() - b.x()) * (a.x() - b.x()) + (a.y() - b.y()) * (a.y() - b.y()));
+    }
+
+    private boolean isDetecting(List<Pose> poses, Pose target) {
+        for (Pose p : poses) {
+            if (distance(p, target) < 5) {return true;}
         }
+        return false;
+    }
+
+    private Pose closestPose(List<Pose> poses, Pose from) {
+        Pose best = poses.get(0);
+        double bestDist = distance(from, best);
+        for(Pose p : poses) {
+            if(distance(p, from) > bestDist) {
+                best = p;
+                bestDist = distance(p, from);
+            }
+        }
+        return best;
     }
 
     @Override
@@ -69,6 +93,7 @@ public class BallGrabberTest extends OpMode {
         opmodeTimer = new Timer();
         opmodeTimer.reset();
         pathTimer.reset();
+        lastBallPose = startPose;
 
         follower = Constants.createFollower(hardwareMap);
         follower.setPose(startPose);
