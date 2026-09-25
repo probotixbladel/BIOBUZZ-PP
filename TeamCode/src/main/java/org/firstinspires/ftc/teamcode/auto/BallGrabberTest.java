@@ -35,20 +35,25 @@ public class BallGrabberTest extends OpMode {
     public ComponentShell comps;
     private TelemetryManager telemetryM;
     public ComponentShell.Alliance alliance;
+    private boolean isSeeingBall = false;
 
 
     public void autonomousPathUpdate() {
-        if(!follower.isBusy()) {
-            List<Pose> ballPoses = comps.limelight.getBallPoses();
+        List<Pose> ballPoses = comps.limelight.getBallPoses();
+        if(!follower.isBusy() || !isSeeingBall) {
             if(!ballPoses.isEmpty()) {
                 Pose target = ballPoses.get(0);
                 double heading = Math.atan2(follower.pose().y() - target.y(), follower.pose().x() - target.x());
                 Path path = Paths.line(follower.pose(), target).linear(follower.pose().heading(), heading);
                 follower.follow(path);
+                isSeeingBall = true;
             }
             else {
-                follower.hold(poseFac.of(follower.pose().x(), follower.pose().y(), follower.pose().heading() + Math.toRadians(15)));
+                follower.hold(poseFac.of(follower.pose().x(), follower.pose().y(), follower.pose().heading() + Math.toRadians(180)));
             }
+        }
+        if (ballPoses.isEmpty() && isSeeingBall) {
+            isSeeingBall = false;
         }
     }
 
