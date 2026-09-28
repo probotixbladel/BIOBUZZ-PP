@@ -17,6 +17,7 @@ public class ComponentShell {
     public TelemetryManager telemeryM;
     public Alliance alliance;
     public HardwareMap hardwareMap;
+    public Intake intake;
     public Limelight limelight;
     public enum Alliance {
         BLUE,
@@ -31,6 +32,7 @@ public class ComponentShell {
         this.telemeryM = tm;
         this.singlePlayer = single;
         this.limelight = new Limelight(hwm, tm, flw, pf);
+        this.intake = new Intake(hwm);
         //this.intake = new Intake(hwm);
     }
 
@@ -47,28 +49,11 @@ public class ComponentShell {
 
         this.update();
 
-        /*if (singlePlayer) {
-            if (gamepad1.left_trigger > 0.2) {
-                intake.state = Intake.IntakeState.OUTTAKE;
-            }
-            else if (gamepad1.right_trigger > 0.2) {
-                intake.state = Intake.IntakeState.INTAKE;
-            }
-            else {
-                intake.state = Intake.IntakeState.STATIC;
-            }
+        if(gamepad1.right_trigger > 0.2) {
+            intake.takeIn();
         }
-
         else {
-            if (gamepad2.left_trigger > 0.2) {
-                intake.state = Intake.IntakeState.OUTTAKE;
-            }
-            else if (gamepad2.right_trigger > 0.2) {
-                intake.state = Intake.IntakeState.INTAKE;
-            }
-            else {
-                intake.state = Intake.IntakeState.STATIC;
-            }
-        }*/
+            intake.takeStatic();
+        }
     }
 }

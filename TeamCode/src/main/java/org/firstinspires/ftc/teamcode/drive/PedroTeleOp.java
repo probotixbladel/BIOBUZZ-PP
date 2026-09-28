@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.api.PoseFactory;
+import com.pedropathing.drivetrain.DrivePowers;
+import com.pedropathing.follower.ManualDrive;
 import com.pedropathing.math.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -49,7 +51,7 @@ public class PedroTeleOp extends OpMode{
 
         follower = createFollower(hardwareMap);
         startingPose = data.storedPose;
-        //follower.setStartingPose(startingPose == null ? new Pose() : startingPose); TODO: get this shii working
+        follower.setPose(startingPose == null ? poseFac.of(8, 8, Math.toRadians(90)) : startingPose);
         follower.update();
         follower.update();
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -61,7 +63,6 @@ public class PedroTeleOp extends OpMode{
 
     @Override
     public void start() {
-        //follower.startTeleopDrive(); TODO: get this shii working
 
     }
     @SuppressLint("SuspiciousIndentation")
@@ -81,33 +82,26 @@ public class PedroTeleOp extends OpMode{
                 gamepad1.right_stick_x
         );
 
-        /*if (!robotCentric) {
-            follower.setTeleOpDrive ( // TODO: make some of these negative if controls inverted
-                    driveInputs[1],
-                    driveInputs[0],
-                    driveInputs[2],
-                    true
-            );
+        if (!robotCentric) {
+            follower.manual(driveInputs[1], driveInputs[0], driveInputs[2]);
         }
         else{
             switch(alliance) {
                 case BLUE:
-                    follower.setTeleOpDrive( // TODO: make some of these negative if controls inverted
-                            driveInputs[1],
-                            driveInputs[0],
-                            driveInputs[2],
-                            false
-                    );
+                    follower.manual(ManualDrive.fieldCentric(
+                            driveInputs[1], driveInputs[0], driveInputs[2],
+                            follower.pose().heading(),
+                            0
+                    ));
                     break;
                 case RED:
-                    follower.setTeleOpDrive( // TODO: make some of these negative if controls inverted
-                            driveInputs[1],
-                            driveInputs[0],
-                            driveInputs[2],
-                            false
-                    );
+                    follower.manual(ManualDrive.fieldCentric(
+                            driveInputs[1], driveInputs[0], driveInputs[2],
+                            follower.pose().heading(),
+                            Math.PI
+                    ));
             }
-        }*/ //TODO: fix this shii
+        }
 
         Comps.updateTeleop(gamepad1, gamepad2);
         follower.update();

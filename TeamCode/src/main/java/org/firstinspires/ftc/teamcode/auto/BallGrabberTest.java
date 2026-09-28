@@ -35,25 +35,19 @@ public class BallGrabberTest extends OpMode {
     public ComponentShell comps;
     private TelemetryManager telemetryM;
     public ComponentShell.Alliance alliance;
-    private Pose lastBallPose;
+    private Pose currentTarget;
 
 
     public void autonomousPathUpdate() {
-        List<Pose> ballPoses = comps.limelight.getBallPoses();
-        if(!follower.isBusy() || pathTimer.seconds() > 5) {
-            if(!ballPoses.isEmpty()) {
-                Pose target = ballPoses.get(0);
-                double heading = Math.atan2(follower.pose().y() - target.y(), follower.pose().x() - target.x());
-                Path path = Paths.line(follower.pose(), target).linear(follower.pose().heading(), heading);
+        Pose closestPose = closestPose(comps.limelight.getBallPoses(), follower.pose());
+        if (currentTarget == null){
+            currentTarget = closestPose;
+        }
+        if(isDetecting(comps.limelight.getBallPoses(), currentTarget)) {
+            if(!follower.isBusy()) {
+                Path path = Paths.line(follower.pose(), currentTarget)
+                        .linear(follower.pose().heading(), Math.atan2(currentTarget.y() - follower.pose().y(), currentTarget.x() - follower.pose().x()));
                 follower.follow(path);
-                pathTimer.reset();
-                lastBallPose = target;
-            }
-            else {
-                double heading = Math.atan2(follower.pose().y() - lastBallPose.y(), follower.pose().x() - lastBallPose.x());
-                Path path = Paths.line(follower.pose(), lastBallPose).linear(follower.pose().heading(), heading);
-                follower.follow(path);
-                pathTimer.reset();
             }
         }
     }
@@ -93,7 +87,6 @@ public class BallGrabberTest extends OpMode {
         opmodeTimer = new Timer();
         opmodeTimer.reset();
         pathTimer.reset();
-        lastBallPose = startPose;
 
         follower = Constants.createFollower(hardwareMap);
         follower.setPose(startPose);
