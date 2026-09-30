@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.components.Storage;
 @TeleOp(name="Blue Reset", group="Linear OpMode")
 public class BlueReset extends LinearOpMode {
     private static PoseFactory poseFac = PoseFactory.radians();
-    public static Pose startingPose = poseFac.of(56, 9, Math.toRadians(270)); //See ExampleAuto to understand how to use this //x = 9 without triangles
+    public static Pose startingPose = poseFac.of(136, 136, Math.toRadians(270)); //See ExampleAuto to understand how to use this //x = 9 without triangles
 
     @Override
     public void runOpMode() {

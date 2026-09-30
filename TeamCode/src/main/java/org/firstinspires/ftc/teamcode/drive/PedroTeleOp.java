@@ -33,7 +33,7 @@ public class PedroTeleOp extends OpMode{
     private ComponentShell Comps;
     List<LynxModule> allHubs;
     private TelemetryManager telemetryM;
-    public static ComponentShell.Alliance alliance;
+    public ComponentShell.Alliance alliance;
     private DriveByWire driveByWire;
     private boolean robotCentric = false;
     public static Pose startingPose;
@@ -82,21 +82,21 @@ public class PedroTeleOp extends OpMode{
                 gamepad1.right_stick_x
         );
 
-        if (!robotCentric) {
-            follower.manual(driveInputs[1], driveInputs[0], driveInputs[2]);
+        if (robotCentric) {
+            follower.manual(-driveInputs[1], -driveInputs[0], -driveInputs[2]);
         }
         else{
             switch(alliance) {
                 case BLUE:
                     follower.manual(ManualDrive.fieldCentric(
-                            driveInputs[1], driveInputs[0], driveInputs[2],
+                            driveInputs[1], driveInputs[0], -driveInputs[2],
                             follower.pose().heading(),
                             0
                     ));
                     break;
                 case RED:
                     follower.manual(ManualDrive.fieldCentric(
-                            driveInputs[1], driveInputs[0], driveInputs[2],
+                            driveInputs[1], driveInputs[0], -driveInputs[2],
                             follower.pose().heading(),
                             Math.PI
                     ));
@@ -105,6 +105,8 @@ public class PedroTeleOp extends OpMode{
 
         Comps.updateTeleop(gamepad1, gamepad2);
         follower.update();
+        telemetryM.addData("teleopAl: ", alliance);
+
         telemetryM.update();
     }
 

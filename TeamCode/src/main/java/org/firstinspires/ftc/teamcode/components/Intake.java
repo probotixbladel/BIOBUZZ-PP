@@ -23,7 +23,7 @@ public class Intake {
         this.hardwareMap = hwm;
 
         this.intake = hardwareMap.get(DcMotorEx.class, "intake");
-        this.intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         this.intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 

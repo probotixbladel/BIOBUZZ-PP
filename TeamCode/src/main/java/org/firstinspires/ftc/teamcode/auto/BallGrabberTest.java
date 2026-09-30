@@ -34,21 +34,26 @@ public class BallGrabberTest extends OpMode {
     public Pose startPose = poseFac.of(8, 8, Math.toRadians(0));
     public ComponentShell comps;
     private TelemetryManager telemetryM;
-    public ComponentShell.Alliance alliance;
+    public ComponentShell.Alliance alliance = ComponentShell.Alliance.RED;
     private Pose currentTarget;
 
 
     public void autonomousPathUpdate() {
-        Pose closestPose = closestPose(comps.limelight.getBallPoses(), follower.pose());
-        if (currentTarget == null){
-            currentTarget = closestPose;
-        }
-        if(isDetecting(comps.limelight.getBallPoses(), currentTarget)) {
-            if(!follower.isBusy()) {
-                Path path = Paths.line(follower.pose(), currentTarget)
-                        .linear(follower.pose().heading(), Math.atan2(currentTarget.y() - follower.pose().y(), currentTarget.x() - follower.pose().x()));
-                follower.follow(path);
+        List<Pose> poses = comps.limelight.getBallPoses();
+        if (!poses.isEmpty()) {
+            Pose closestPose = closestPose(poses, follower.pose());
+            if (currentTarget == null){
+                currentTarget = closestPose;
             }
+            if (!isDetecting(poses, currentTarget)) {
+                currentTarget = closestPose;
+            }
+        }
+
+        if(!follower.isBusy() && currentTarget != null) {
+            Path path = Paths.line(follower.pose(), currentTarget)
+                    .linear(follower.pose().heading(), Math.atan2(currentTarget.y() - follower.pose().y(), currentTarget.x() - follower.pose().x()));
+            follower.follow(path);
         }
     }
 

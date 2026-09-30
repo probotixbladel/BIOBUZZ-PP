@@ -20,7 +20,7 @@ public class DriveByWire {
     public double[] getScaledInputs (double x, double y, double yaw) {
         double length = Math.sqrt(x * x + y * y);
         double scale = Math.pow(length, translationalCurveExponent) * translationalGear;
-        yaw *= Math.pow(yaw, rotationalCurveExponent) * rotationalGear;
+        yaw *= Math.pow(Math.abs(yaw), rotationalCurveExponent) * rotationalGear;
         x *= scale;
         y *= scale;
 

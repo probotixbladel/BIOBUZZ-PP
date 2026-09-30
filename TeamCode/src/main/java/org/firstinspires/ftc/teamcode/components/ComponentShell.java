@@ -14,7 +14,7 @@ public class ComponentShell {
     private PoseFactory poseFac;
     public boolean singlePlayer;
     public Follower follower;
-    public TelemetryManager telemeryM;
+    public TelemetryManager telemetryM;
     public Alliance alliance;
     public HardwareMap hardwareMap;
     public Intake intake;
@@ -29,7 +29,7 @@ public class ComponentShell {
         this.poseFac = pf;
         this.hardwareMap = hwm;
         this.follower = flw;
-        this.telemeryM = tm;
+        this.telemetryM = tm;
         this.singlePlayer = single;
         this.limelight = new Limelight(hwm, tm, flw, pf);
         this.intake = new Intake(hwm);
@@ -42,7 +42,8 @@ public class ComponentShell {
         //intake.Update();
 
         limelight.update();
-        telemeryM.addData("Pos= ", follower.pose());
+        telemetryM.addData("Pos= ", follower.pose());
+        telemetryM.addData("al: ", alliance);
     }
 
     public void updateTeleop(Gamepad gamepad1, Gamepad gamepad2) {
