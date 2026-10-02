@@ -38,7 +38,7 @@ public class Limelight {
     }
 
     public void update() {
-        getBallPoses();
+
     }
 
     public List<Pose> getBallPoses() {

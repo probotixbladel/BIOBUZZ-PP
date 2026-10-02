@@ -21,17 +21,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.components.ComponentShell;
 import org.firstinspires.ftc.teamcode.components.Storage;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.util.PathFinder;
 
 @Configurable
 @Autonomous(name = "BallGrabberTest")
 public class BallGrabberTest extends OpMode {
-
+    public PathFinder pathFinder;
     public PoseFactory poseFac = PoseFactory.radians();
     private Follower follower;
     List<LynxModule> allHubs;
     public ElapsedTime Timer = new ElapsedTime();
     private Timer pathTimer, actionTimer, opmodeTimer;
-    public Pose startPose = poseFac.of(8, 8, Math.toRadians(0));
+    public Pose startPose = poseFac.of(8, 8, Math.toRadians(45));
     public ComponentShell comps;
     private TelemetryManager telemetryM;
     public ComponentShell.Alliance alliance = ComponentShell.Alliance.RED;
@@ -47,13 +48,17 @@ public class BallGrabberTest extends OpMode {
             }
             if (!isDetecting(poses, currentTarget)) {
                 currentTarget = closestPose;
+                pathTimer.reset();
             }
         }
 
-        if(!follower.isBusy() && currentTarget != null) {
-            Path path = Paths.line(follower.pose(), currentTarget)
-                    .linear(follower.pose().heading(), Math.atan2(currentTarget.y() - follower.pose().y(), currentTarget.x() - follower.pose().x()));
-            follower.follow(path);
+        if(!follower.isBusy() && currentTarget != null && pathTimer.seconds() > 5) {
+            if(currentTarget.x() < 72) {
+                //Path path = Paths.line(follower.pose(), currentTarget)
+                //        .linear(follower.pose().heading(), Math.atan2(currentTarget.y() - follower.pose().y(), currentTarget.x() - follower.pose().x()));
+                Path path = pathFinder.pathGenerator(follower.pose(), currentTarget.withHeading(Math.atan2(currentTarget.y() - follower.pose().y(), currentTarget.x() - follower.pose().x())));
+                follower.follow(path);
+            }
         }
     }
 
@@ -72,7 +77,7 @@ public class BallGrabberTest extends OpMode {
         Pose best = poses.get(0);
         double bestDist = distance(from, best);
         for(Pose p : poses) {
-            if(distance(p, from) > bestDist) {
+            if(distance(p, from) < bestDist) {
                 best = p;
                 bestDist = distance(p, from);
             }
@@ -94,6 +99,7 @@ public class BallGrabberTest extends OpMode {
         pathTimer.reset();
 
         follower = Constants.createFollower(hardwareMap);
+        pathFinder = new PathFinder();
         follower.setPose(startPose);
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
         comps = new ComponentShell(hardwareMap, follower, telemetryM, alliance, poseFac, true);
