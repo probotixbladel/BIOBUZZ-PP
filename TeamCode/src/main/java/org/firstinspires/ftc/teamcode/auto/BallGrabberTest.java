@@ -59,6 +59,11 @@ public class BallGrabberTest extends OpMode {
                 Path path = pathFinder.pathGenerator(follower.pose(), currentTarget.withHeading(Math.atan2(currentTarget.y() - follower.pose().y(), currentTarget.x() - follower.pose().x())));
                 follower.follow(path);
             }
+            else {
+                if(comps.follower.pose().x() > 60) {
+                    follower.hold(follower.pose().withHeading(180 - follower.pose().heading()));
+                }
+            }
         }
     }
 
