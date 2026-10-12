@@ -81,15 +81,17 @@ public class BallGrabberTest extends OpMode {
         }
 
         if (!escapingBorder) {
-            if ((follower.pose().y() > 10 && follower.pose().heading() < 0.75 * Math.PI && follower.pose().heading() > 0.25 * Math.PI)
+            if ((follower.pose().y() > 130 && follower.pose().heading() < 0.75 * Math.PI && follower.pose().heading() > 0.25 * Math.PI)
                     || (follower.pose().x() < 14 && follower.pose().y() > 72 && follower.pose().heading() < 1.25 * Math.PI && follower.pose().heading() > 0.75 * Math.PI)) {
                 Path path = Paths.line(follower.pose(), upGoal).linear(follower.pose().heading(), upGoal.heading());
                 follower.follow(path);
+                currentTarget = null;
                 escapingBorder = true;
             } else if ((follower.pose().y() < 14 && follower.pose().heading() < 1.75 * Math.PI && follower.pose().heading() > 1.25 * Math.PI)
                     || (follower.pose().x() < 14 && follower.pose().y() < 72 && follower.pose().heading() < 1.25 * Math.PI && follower.pose().heading() > 0.75 * Math.PI)) {
                 Path path = Paths.line(follower.pose(), downGoal).linear(follower.pose().heading(), downGoal.heading());
                 follower.follow(path);
+                currentTarget = null;
                 escapingBorder = true;
             }
         }
@@ -151,6 +153,7 @@ public class BallGrabberTest extends OpMode {
 
         comps.update();
 
+        telemetryM.debug("target: ", currentTarget);
         telemetryM.debug("x", follower.pose().x());
         telemetryM.debug("y", follower.pose().y());
         telemetryM.debug("heading", follower.pose().heading());

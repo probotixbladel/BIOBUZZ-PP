@@ -26,6 +26,10 @@ public class PathFinder {
     private final Pose flower2 = poseFac.of(48, 144, 0);
     private final Pose trussControlUp = poseFac.of(48, 130, 0);
     private final Pose trussControlDown = poseFac.of(48, 0, 0);
+    private final Pose trussControlUpLeft = poseFac.of(24, 120, 0);
+    private final Pose trussControlUpRight = poseFac.of(72, 120, 0);
+    private final Pose trussControlDownLeft = poseFac.of(24, 24, 0);
+    private final Pose trussControlDownRight = poseFac.of(72, 24, 0);
     public PathFinder(){
 
     }
@@ -59,8 +63,14 @@ public class PathFinder {
         }
         double avY = (from.y() + to.y()) / 2;
         if (avY > 72) {
-            return Paths.curve(from, trussControlUp, to).heading(lookAt(to.toVector2D()));
+            if (from.x() < to.x()) {
+                return Paths.curve(from, trussControlUpLeft, trussControlUp, trussControlUpRight, to).heading(lookAt(to.toVector2D()));
+            }
+            return Paths.curve(from, trussControlUpRight, trussControlUp, trussControlUpLeft, to).heading(lookAt(to.toVector2D()));
         }
-        return Paths.curve(from, trussControlDown, to).heading(lookAt(to.toVector2D()));
+        if (from.x() < to.x()) {
+            return Paths.curve(from, trussControlDownLeft, trussControlDown, trussControlDownRight, to).heading(lookAt(to.toVector2D()));
+        }
+        return Paths.curve(from, trussControlDownRight, trussControlDown, trussControlDownLeft, to).heading(lookAt(to.toVector2D()));
     }
 }
