@@ -37,9 +37,10 @@ public class PathFinder {
 
 
     public static Interpolator lookAt(Vector2D target){
-        return (Curve curve, double t) -> Angle.normalize(
-                target.minus(curve.get(t)).theta()
-        );
+        return (curve, t) -> {
+            Vector2D d = target.minus(curve.get(t));
+            return Angle.normalize(d.isZero() ? curve.tangent(t).theta() : d.theta());
+        };
     }
 
     public Path pathGenerator(Pose from, Pose to) {
