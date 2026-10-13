@@ -22,7 +22,7 @@ public class Limelight {
     public static double llHeight = 8.976378; // In inches the height from the floor to the lens
     public static double llForwardOffset = 7.677165; // In inches the offset of the limelight, forward is positive, backward is negative
     public static double llLateralOffset = 1.574803; // In inches the offset of the limelight, right is positive, left is negative
-    public static double llAngle = 63; // In degrees the angle between the verticle and the direction of the lens
+    public static double llAngle = 65; // In degrees the angle between the verticle and the direction of the lens
     public static double nectarRad = 1.8; // In inches the radius of the nectar
     public static double pollenRad = 1.4; // In inches the radius of the pollen
 

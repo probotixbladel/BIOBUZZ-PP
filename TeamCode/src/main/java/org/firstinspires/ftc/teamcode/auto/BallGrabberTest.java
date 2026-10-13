@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
 
+
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.api.Paths;
 import com.pedropathing.api.PoseFactory;
@@ -40,10 +41,10 @@ public class BallGrabberTest extends OpMode {
     public ComponentShell.Alliance alliance = ComponentShell.Alliance.RED;
     private Pose currentTarget;
     private boolean wasDetecting = false;
-    private boolean isDetecting = false;
+    private Pose isDetecting = null;
     private boolean escapingBorder = true;
-    private final Pose upGoal = poseFac.of(36, 108, Math.toRadians(-90));
-    private final Pose downGoal = poseFac.of(36, 36, Math.toRadians(90));
+    private final Pose upGoal = poseFac.of(24, 120, Math.toRadians(-45));
+    private final Pose downGoal = poseFac.of(24, 24, Math.toRadians(45));
 
 
     public void autonomousPathUpdate() {
@@ -54,14 +55,32 @@ public class BallGrabberTest extends OpMode {
                 currentTarget = closestPose;
             }
             isDetecting = isDetecting(poses, currentTarget);
-            if (!isDetecting) {
+            if (isDetecting == null) {
                 if (notDetectingTime.seconds() > 0.5) {
                     currentTarget = closestPose;
                     pathTimer.reset();
                 }
             }
-            if (wasDetecting && !isDetecting) {
+            else {
+                currentTarget = isDetecting;
+            }
+            if (wasDetecting && isDetecting == null) {
                 notDetectingTime.reset();
+            }
+        }
+        else if (!escapingBorder && notDetectingTime.seconds() < 0.5){
+            if (follower.pose().y() > 72) {
+                Path path = pathFinder.pathGenerator(follower.pose(), upGoal);
+                follower.follow(path);
+                escapingBorder = true;
+                currentTarget = null;
+            }
+            else {
+                Path path = pathFinder.pathGenerator(follower.pose(), downGoal);
+                follower.follow(path);
+                escapingBorder = true;
+                currentTarget = null;
+
             }
         }
 
@@ -69,13 +88,29 @@ public class BallGrabberTest extends OpMode {
             if(currentTarget.x() < 72) {
                 //Path path = Paths.line(follower.pose(), currentTarget)
                 //        .linear(follower.pose().heading(), Math.atan2(currentTarget.y() - follower.pose().y(), currentTarget.x() - follower.pose().x()));
-                Path path = pathFinder.pathGenerator(follower.pose(), currentTarget.withHeading(Math.atan2(currentTarget.y() - follower.pose().y(), currentTarget.x() - follower.pose().x())));
+                Path path = pathFinder.pathGenerator(follower.pose(), currentTarget);
                 follower.follow(path);
                 escapingBorder = false;
             }
             else {
-                if(comps.follower.pose().x() > 50) {
+                if(comps.follower.pose().x() > 50 && (comps.follower.pose().heading() < 0.25 * Math.PI || comps.follower.pose().heading() > 1.75 * Math.PI)) {
                     follower.hold(follower.pose().withHeading(Math.PI - follower.pose().heading()));
+                }
+                else {
+                    if (follower.pose().y() > 72) {
+                        Path path = pathFinder.pathGenerator(follower.pose(), upGoal);
+                        follower.follow(path);
+                        escapingBorder = true;
+                        currentTarget = null;
+                    }
+                    else {
+                        Path path = pathFinder.pathGenerator(follower.pose(), downGoal);
+                        follower.follow(path);
+                        escapingBorder = true;
+                        currentTarget = null;
+
+                    }
+
                 }
             }
         }
@@ -96,18 +131,18 @@ public class BallGrabberTest extends OpMode {
             }
         }
 
-        wasDetecting = isDetecting;
+        wasDetecting = isDetecting != null;
     }
 
     private double distance(Pose a, Pose b) {
         return Math.sqrt((a.x() - b.x()) * (a.x() - b.x()) + (a.y() - b.y()) * (a.y() - b.y()));
     }
 
-    private boolean isDetecting(List<Pose> poses, Pose target) {
+    private Pose isDetecting(List<Pose> poses, Pose target) {
         for (Pose p : poses) {
-            if (distance(p, target) < 5) {return true;}
+            if (distance(p, target) < 5) {return p;}
         }
-        return false;
+        return null;
     }
 
     private Pose closestPose(List<Pose> poses, Pose from) {
@@ -153,7 +188,7 @@ public class BallGrabberTest extends OpMode {
 
         comps.update();
 
-        telemetryM.debug("target: ", currentTarget);
+        telemetryM.debug("target: ", currentTarget != null ? currentTarget : "No target");
         telemetryM.debug("x", follower.pose().x());
         telemetryM.debug("y", follower.pose().y());
         telemetryM.debug("heading", follower.pose().heading());
