@@ -41,6 +41,27 @@ public class Limelight {
 
     }
 
+    public double[] getClosestBall() {
+        limelight.start();
+        LLResult result = limelight.getLatestResult();
+        List<Pose> poses = new ArrayList<>();
+
+        if (result != null && result.isValid()) {
+            List<LLResultTypes.DetectorResult> detections = result.getDetectorResults();
+
+            String className = detections.get(0).getClassName();      // e.g. "yellow_pollen", "red_nectar", "blue_nectar"
+            double tx = detections.get(0).getTargetXDegrees();          // left-right offset
+            double ty = detections.get(0).getTargetYDegrees();          // up-down offset
+            double area = detections.get(0).getTargetArea();            // rough size/distance proxy
+
+            limelight.pause();
+            return new double[]{tx, ty};
+        }
+        telemetryM.addData("Limelight", "No detections");
+        limelight.pause();
+        return null;
+    }
+
     public List<Pose> getBallPoses() {
         limelight.start();
         LLResult result = limelight.getLatestResult();
