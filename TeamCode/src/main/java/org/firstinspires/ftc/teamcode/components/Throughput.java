@@ -17,8 +17,6 @@ import org.firstinspires.ftc.teamcode.util.Constants;
 public class Throughput {
     private HardwareMap hardwareMap;
     private DcMotorEx through;
-    public static double inthroughPower = 0.8;
-    public static double staticthroughPower = 0;
 
     public Throughput(HardwareMap hwm) {
         this.hardwareMap = hwm;
