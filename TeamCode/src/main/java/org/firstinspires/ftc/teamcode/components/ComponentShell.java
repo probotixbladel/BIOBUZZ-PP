@@ -18,6 +18,7 @@ public class ComponentShell {
     public Alliance alliance;
     public HardwareMap hardwareMap;
     public Intake intake;
+    public Throughput through;
     public Limelight limelight;
     public enum Alliance {
         BLUE,
@@ -33,13 +34,11 @@ public class ComponentShell {
         this.singlePlayer = single;
         this.limelight = new Limelight(hwm, tm, flw, pf);
         this.intake = new Intake(hwm);
-        //this.intake = new Intake(hwm);
+        this.through = new Throughput(hwm);
     }
 
     @SuppressLint("SuspiciousIndentation")
     public void update() {
-
-        //intake.Update();
 
         limelight.update();
         telemetryM.addData("Pos= ", follower.pose());
@@ -50,11 +49,13 @@ public class ComponentShell {
 
         this.update();
 
-        if(gamepad1.right_trigger > 0.2) {
+        if(gamepad2.left_trigger < 0.8) {
             intake.takeIn();
         }
         else {
-            intake.takeStatic();
+            intake.takeOut();
         }
+
+        through.throughIn();
     }
 }

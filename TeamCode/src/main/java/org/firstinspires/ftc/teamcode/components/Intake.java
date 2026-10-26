@@ -12,12 +12,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.pedropathing.follower.Follower;
 import com.bylazar.telemetry.TelemetryManager;
 
+import org.firstinspires.ftc.teamcode.util.Constants;
+
 @Configurable
 public class Intake {
     private HardwareMap hardwareMap;
     private DcMotorEx intake;
-    public static double intakePower = 1;
-    public static double staticPower = 0;
 
     public Intake(HardwareMap hwm) {
         this.hardwareMap = hwm;
@@ -28,10 +28,14 @@ public class Intake {
     }
 
     public void takeIn() {
-        intake.setPower(intakePower);
+        intake.setPower(Constants.Intake.INTAKEPOWER);
     }
 
     public void takeStatic() {
-        intake.setPower(staticPower);
+        intake.setPower(Constants.Intake.STATICPOWER);
+    }
+
+    public void takeOut() {
+        intake.setPower(Constants.Intake.OUTTAKEPOWER);
     }
 }

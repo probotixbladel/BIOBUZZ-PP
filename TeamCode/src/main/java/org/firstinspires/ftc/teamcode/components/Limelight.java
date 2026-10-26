@@ -9,6 +9,8 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.util.Constants;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,10 +21,6 @@ public class Limelight {
     private Limelight3A limelight;
     private TelemetryManager telemetryM;
     private Follower follower;
-    public static double llHeight = 8.976378; // In inches the height from the floor to the lens
-    public static double llForwardOffset = 7.677165; // In inches the offset of the limelight, forward is positive, backward is negative
-    public static double llLateralOffset = 1.574803; // In inches the offset of the limelight, right is positive, left is negative
-    public static double llAngle = 65; // In degrees the angle between the verticle and the direction of the lens
     public static double nectarRad = 1.8; // In inches the radius of the nectar
     public static double pollenRad = 1.4; // In inches the radius of the pollen
 
@@ -78,12 +76,12 @@ public class Limelight {
 
                 double yDisplacement;
                 if (className.contains("_pollen")) {
-                    yDisplacement = (llHeight - pollenRad) * Math.tan(Math.toRadians(llAngle) + Math.toRadians(ty)) + pollenRad + llForwardOffset;
+                    yDisplacement = (Constants.Limelight.HEIGHT - pollenRad) * Math.tan(Math.toRadians(Constants.Limelight.ANGLE) + Math.toRadians(ty)) + pollenRad + Constants.Limelight.FORWARDOFFSET;
                 }
                 else {
-                    yDisplacement = (llHeight - nectarRad) * Math.tan(Math.toRadians(llAngle) + Math.toRadians(ty)) + nectarRad + llForwardOffset;
+                    yDisplacement = (Constants.Limelight.HEIGHT - nectarRad) * Math.tan(Math.toRadians(Constants.Limelight.ANGLE) + Math.toRadians(ty)) + nectarRad + Constants.Limelight.FORWARDOFFSET;
                 }
-                double xDisplacement = yDisplacement * Math.tan(Math.toRadians(tx)) + llLateralOffset;
+                double xDisplacement = yDisplacement * Math.tan(Math.toRadians(tx)) + Constants.Limelight.LATERALOFFSET;
 
                 double x = follower.pose().x() - xDisplacement * Math.sin(follower.pose().heading()) + yDisplacement * Math.cos(follower.pose().heading());
                 double y = follower.pose().y() + xDisplacement * Math.cos(follower.pose().heading()) + yDisplacement * Math.sin(follower.pose().heading());
