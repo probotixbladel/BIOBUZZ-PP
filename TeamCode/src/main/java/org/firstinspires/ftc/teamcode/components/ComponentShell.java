@@ -19,6 +19,7 @@ public class ComponentShell {
     public HardwareMap hardwareMap;
     public Intake intake;
     public Throughput through;
+    public Gate gate;
     public Limelight limelight;
     public enum Alliance {
         BLUE,
@@ -35,6 +36,7 @@ public class ComponentShell {
         this.limelight = new Limelight(hwm, tm, flw, pf);
         this.intake = new Intake(hwm);
         this.through = new Throughput(hwm);
+        this.gate = new Gate(hwm);
     }
 
     @SuppressLint("SuspiciousIndentation")
@@ -43,19 +45,21 @@ public class ComponentShell {
         limelight.update();
         telemetryM.addData("Pos= ", follower.pose());
         telemetryM.addData("al: ", alliance);
+
+        intake.update();
+        through.update();
     }
 
     public void updateTeleop(Gamepad gamepad1, Gamepad gamepad2) {
-
         this.update();
 
         if(gamepad2.left_trigger < 0.8) {
-            intake.takeIn();
+            intake.state = Intake.intakeState.TAKE_IN;
         }
         else {
-            intake.takeOut();
+            intake.state = Intake.intakeState.TAKE_OUT;
         }
 
-        through.throughIn();
+        through.state = Throughput.throughState.IN_THROUGH;
     }
 }

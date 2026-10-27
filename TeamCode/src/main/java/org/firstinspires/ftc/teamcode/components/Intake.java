@@ -17,7 +17,13 @@ import org.firstinspires.ftc.teamcode.util.Constants;
 @Configurable
 public class Intake {
     private HardwareMap hardwareMap;
-    private DcMotorEx intake;
+    public DcMotorEx intake;
+    public intakeState state = intakeState.TAKE_STATIC;
+    public enum intakeState {
+        TAKE_IN,
+        TAKE_OUT,
+        TAKE_STATIC
+    }
 
     public Intake(HardwareMap hwm) {
         this.hardwareMap = hwm;
@@ -27,15 +33,19 @@ public class Intake {
         this.intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void takeIn() {
-        intake.setPower(Constants.Intake.INTAKEPOWER);
-    }
+    public void update() {
+        switch (state){
+            case TAKE_IN:
+                intake.setPower(Constants.Intake.INTAKE_POWER);
+                break;
 
-    public void takeStatic() {
-        intake.setPower(Constants.Intake.STATICPOWER);
-    }
+            case TAKE_OUT:
+                intake.setPower(Constants.Intake.OUTTAKE_POWER);
+                break;
 
-    public void takeOut() {
-        intake.setPower(Constants.Intake.OUTTAKEPOWER);
+            case TAKE_STATIC:
+                intake.setPower(Constants.Intake.STATIC_POWER);
+                break;
+        }
     }
 }

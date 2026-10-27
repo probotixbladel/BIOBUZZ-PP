@@ -76,12 +76,12 @@ public class Limelight {
 
                 double yDisplacement;
                 if (className.contains("_pollen")) {
-                    yDisplacement = (Constants.Limelight.HEIGHT - pollenRad) * Math.tan(Math.toRadians(Constants.Limelight.ANGLE) + Math.toRadians(ty)) + pollenRad + Constants.Limelight.FORWARDOFFSET;
+                    yDisplacement = (Constants.Limelight.HEIGHT - pollenRad) * Math.tan(Math.toRadians(Constants.Limelight.ANGLE) + Math.toRadians(ty)) + pollenRad + Constants.Limelight.FORWARD_OFFSET;
                 }
                 else {
-                    yDisplacement = (Constants.Limelight.HEIGHT - nectarRad) * Math.tan(Math.toRadians(Constants.Limelight.ANGLE) + Math.toRadians(ty)) + nectarRad + Constants.Limelight.FORWARDOFFSET;
+                    yDisplacement = (Constants.Limelight.HEIGHT - nectarRad) * Math.tan(Math.toRadians(Constants.Limelight.ANGLE) + Math.toRadians(ty)) + nectarRad + Constants.Limelight.FORWARD_OFFSET;
                 }
-                double xDisplacement = yDisplacement * Math.tan(Math.toRadians(tx)) + Constants.Limelight.LATERALOFFSET;
+                double xDisplacement = yDisplacement * Math.tan(Math.toRadians(tx)) + Constants.Limelight.LATERAL_OFFSET;
 
                 double x = follower.pose().x() - xDisplacement * Math.sin(follower.pose().heading()) + yDisplacement * Math.cos(follower.pose().heading());
                 double y = follower.pose().y() + xDisplacement * Math.cos(follower.pose().heading()) + yDisplacement * Math.sin(follower.pose().heading());

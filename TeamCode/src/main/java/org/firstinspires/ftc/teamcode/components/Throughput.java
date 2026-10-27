@@ -16,7 +16,13 @@ import org.firstinspires.ftc.teamcode.util.Constants;
 @Configurable
 public class Throughput {
     private HardwareMap hardwareMap;
-    private DcMotorEx through;
+    public DcMotorEx through;
+    public throughState state = throughState.STATIC_THROUGH;
+    public enum throughState{
+        STATIC_THROUGH,
+        IN_THROUGH,
+        OUT_THROUGH
+    }
 
     public Throughput(HardwareMap hwm) {
         this.hardwareMap = hwm;
@@ -26,15 +32,19 @@ public class Throughput {
         this.through.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void throughIn() {
-        through.setPower(Constants.Throughput.INTHROUGHPOWER);
-    }
+    public void update() {
+        switch(state) {
+            case STATIC_THROUGH:
+                through.setPower(Constants.Throughput.STATIC_POWER);
+                break;
 
-    public void throughStatic() {
-        through.setPower(Constants.Throughput.STATICPOWER);
-    }
+            case IN_THROUGH:
+                through.setPower(Constants.Throughput.INTHROUGH_POWER);
+                break;
 
-    public void throughOut() {
-        through.setPower(Constants.Throughput.OUTTHROUGHPOWER);
+            case OUT_THROUGH:
+                through.setPower(Constants.Throughput.OUTTHROUGH_POWER);
+                break;
+        }
     }
 }
