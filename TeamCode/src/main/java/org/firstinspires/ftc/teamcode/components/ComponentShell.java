@@ -20,6 +20,7 @@ public class ComponentShell {
     public Intake intake;
     public Throughput through;
     public Gate gate;
+    public Detector detector;
     public Limelight limelight;
     public enum Alliance {
         BLUE,
@@ -37,17 +38,20 @@ public class ComponentShell {
         this.intake = new Intake(hwm);
         this.through = new Throughput(hwm);
         this.gate = new Gate(hwm);
+        this.detector = new Detector(hwm);
     }
 
     @SuppressLint("SuspiciousIndentation")
     public void update() {
 
         limelight.update();
+        telemetryM.addData("detecting: ", detector.detecting);
         telemetryM.addData("Pos= ", follower.pose());
         telemetryM.addData("al: ", alliance);
 
         intake.update();
         through.update();
+        detector.update();
     }
 
     public void updateTeleop(Gamepad gamepad1, Gamepad gamepad2) {

@@ -57,6 +57,7 @@ public class Puppit extends OpMode {
     @SuppressLint("SuspiciousIndentation")
     @Override
     public void loop() {
+        Comps.update();
         Comps.intake.intake.setPower(INTAKE_POWER);
         Comps.through.through.setPower(THROUGH_POWER);
         Comps.gate.gate.setPosition(GATE_POS);
