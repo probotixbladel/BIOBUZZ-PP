@@ -60,6 +60,13 @@ public class ComponentShell {
             intake.state = Intake.intakeState.TAKE_OUT;
         }
 
+        if(gamepad2.a) {
+            gate.openGate();
+        }
+        else {
+            gate.closeGate();
+        }
+
         through.state = Throughput.throughState.IN_THROUGH;
     }
 }

@@ -63,5 +63,6 @@ public class Puppit extends OpMode {
         telemetryM.addData("Intake: ", INTAKE_POWER);
         telemetryM.addData("Through: ", THROUGH_POWER);
         telemetryM.addData("Gate: ", GATE_POS);
+        telemetryM.update();
     }
 }
