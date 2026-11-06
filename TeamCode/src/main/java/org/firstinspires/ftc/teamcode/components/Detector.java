@@ -5,12 +5,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Detector {
     private DigitalChannel fish1;
-    private DigitalChannel fish1;
     private DigitalChannel fish2;
     private DigitalChannel fish3;
     private DigitalChannel fish4;
     private DigitalChannel fish5;
-    public int ballNum = 0;
     public boolean detecting1;
     public boolean detecting2;
     public boolean detecting3;
@@ -39,11 +37,9 @@ public class Detector {
         detecting3 = !fish1.getState();
         detecting4 = !fish1.getState();
         detecting5 = !fish1.getState();
-
-        ballNum = findBallNum();
     }
 
-    private int findBallNum(){
+    public int findBallNum(){
         int ballNumTemp = 0;
         if(detecting1) ballNumTemp++;
         if(detecting2) ballNumTemp++;

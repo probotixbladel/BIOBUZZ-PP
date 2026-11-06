@@ -45,7 +45,7 @@ public class ComponentShell {
     public void update() {
 
         limelight.update();
-        telemetryM.addData("detecting: ", detector.detecting);
+        telemetryM.addData("detecting: ", detector.findBallNum());
         telemetryM.addData("Pos= ", follower.pose());
         telemetryM.addData("al: ", alliance);
 
@@ -70,7 +70,11 @@ public class ComponentShell {
         else {
             gate.closeGate();
         }
-
-        through.state = Throughput.throughState.IN_THROUGH;
+        if(detector.findBallNum() < 4){
+            through.state = Throughput.throughState.IN_THROUGH;
+        }
+        else{
+            through.state = Throughput.throughState.STATIC_THROUGH;
+        }
     }
 }
