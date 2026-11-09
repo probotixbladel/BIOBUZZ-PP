@@ -8,6 +8,7 @@ import com.pedropathing.paths.Path;
 import com.qualcomm.hardware.lynx.LynxModule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.utils.Timer;
@@ -53,44 +54,31 @@ public class AutonomousSample extends OpMode {
         END
     }
 
-    public void MoveLinear(Pose to, float time, boolean waitTilFinished) {
-        List<Object> step = steps.get(currentStepDrawn);
+    private List<Object> newStep(Object... values) {
+        List<Object> step = new ArrayList<>(Arrays.asList(values));
+        steps.add(step);
+        return step;
+    }
+    public void MoveLinear(Pose to, double time, boolean waitTilFinished) {
         Path path = Paths.line(lastPose, to).linear(lastPose, to);
         lastPose = to;
-        step.set(0, Actions.MOVE);
-        step.set(1, path);
-        currentStepDrawn++;
-        step = steps.get(currentStepDrawn);
-        step.set(0, Actions.FOLLOWPATH);
-        step.set(1, time);
-        step.set(2, waitTilFinished);
-        currentStepDrawn++;
+        newStep(Actions.MOVE, path);
+        newStep(Actions.FOLLOWPATH, time, waitTilFinished);
     }
 
-    public void MoveCurve(Pose to, Pose control, float time, boolean waitTilFinished) {
-        List<Object> step = steps.get(currentStepDrawn);
+    public void MoveCurve(Pose to, Pose control, double time, boolean waitTilFinished) {
         Path path = Paths.curve(lastPose, control, to).linear(lastPose, to);
         lastPose = to;
-        step.set(0, Actions.MOVE);
-        step.set(1, path);
-        currentStepDrawn++;
-        step = steps.get(currentStepDrawn);
-        step.set(0, Actions.FOLLOWPATH);
-        step.set(1, time);
-        step.set(2, waitTilFinished);
-        currentStepDrawn++;
+        newStep(Actions.MOVE, path);
+        newStep(Actions.FOLLOWPATH, time, waitTilFinished);
     }
 
-    public void Pause(float time) {
-        List<Object> step = steps.get(currentStepDrawn);
-        step.set(0, Actions.PAUSE);
-        step.set(1, time);
-        currentStepDrawn++;
+    public void Pause(double time) {
+        newStep(Actions.PAUSE, time);
     }
 
     public void End() {
-        steps.get(currentStepDrawn).set(0, Actions.END);
-        currentStepDrawn++;
+        newStep(Actions.END);
     }
 
 
@@ -111,9 +99,17 @@ public class AutonomousSample extends OpMode {
                 break;
 
             case FOLLOWPATH:
-                if((!follower.isBusy() || !(boolean) step.get(2)) && pathTimer.seconds() > (double) step.get(1)) { // step 1 is the max time and step 2 is the waitTilFinished bool
-                    pathTimer.reset();
-                    currentStepPlayed++;
+                if((boolean) step.get(2)) {  // step 1 is the max time and step 2 is the waitTilFinished bool
+                    if(!follower.isBusy() || pathTimer.seconds() > (double) step.get(1)) {
+                        pathTimer.reset();
+                        currentStepPlayed++;
+                    }
+                }
+                else{
+                    if(pathTimer.seconds() > (double) step.get(1)){
+                        pathTimer.reset();
+                        currentStepPlayed++;
+                    }
                 }
                 break;
 
@@ -141,7 +137,7 @@ public class AutonomousSample extends OpMode {
         pathTimer.reset();
 
         follower = Constants.createFollower(hardwareMap);
-        //follower.setStartingPose(startPose); TODO: fix this shii
+        follower.setPose(startPose);
         lastPose = startPose;
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
         comps = new ComponentShell(hardwareMap, follower, telemetryM, alliance, poseFac, true);

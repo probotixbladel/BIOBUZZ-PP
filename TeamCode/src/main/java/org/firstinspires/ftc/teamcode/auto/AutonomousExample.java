@@ -12,21 +12,20 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.components.ComponentShell;
 @Configurable
-@Disabled
 @Autonomous(name = "AutonomousExample")
 public class AutonomousExample extends AutonomousSample {
     @Override
     public void init() {
         // to start you need to define the startpose and alliance and the run the init from the autonomous sample
-        startPose = poseFac.of(0, 0, Math.toRadians(0));
-        alliance = ComponentShell.Alliance.BLUE;
+        startPose = poseFac.of(8, 8, Math.toRadians(90));
+        alliance = ComponentShell.Alliance.RED;
         super.init();
 
         //here you see different functions to call
 
-        MoveCurve(poseFac.of(0, 0, Math.toRadians(0)), poseFac.of(0, 0, Math.toRadians(0)), 10, true);
+        MoveCurve(poseFac.of(24, 72, Math.toRadians(0)), poseFac.of(48, 24, Math.toRadians(0)), 10, true);
         Pause(10);
-        MoveLinear(poseFac.of(0, 0, Math.toRadians(0)), 2, true);
+        MoveLinear(poseFac.of(48, 24, Math.toRadians(0)), 2, true);
         End();
     }
 }
