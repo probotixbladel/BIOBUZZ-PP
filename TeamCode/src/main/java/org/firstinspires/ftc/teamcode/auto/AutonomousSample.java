@@ -44,13 +44,13 @@ public class AutonomousSample extends OpMode {
     public ComponentShell.Alliance alliance;
     private boolean stop = false;
     private Pose lastPose;
-    private int currentStepDrawn = 0;
     private int currentStepPlayed = 0;
     private List<List<Object>> steps = new ArrayList<>();
     public enum Actions {
         MOVE,
         FOLLOWPATH,
         PAUSE,
+        SHOOT,
         END
     }
 
@@ -73,6 +73,10 @@ public class AutonomousSample extends OpMode {
         newStep(Actions.FOLLOWPATH, time, waitTilFinished);
     }
 
+    public void Shoot(int pollenLeft) { // amount of pollen that need to be left in the robot after shooting (typically needs to be 0)
+        newStep(Actions.SHOOT, pollenLeft);
+    }
+
     public void Pause(double time) {
         newStep(Actions.PAUSE, time);
     }
@@ -85,6 +89,14 @@ public class AutonomousSample extends OpMode {
     public void autonomousPathUpdate() {
         List<Object> step = steps.get(currentStepPlayed);
         switch((Actions) step.get(0)) {
+            case SHOOT:
+                comps.gate.openGate();
+                if (comps.detector.findBallNum() <= (int) step.get(1)) {
+                    pathTimer.reset();
+                    currentStepPlayed++;
+                }
+                break;
+
             case PAUSE:
                 if (pathTimer.seconds() > (double) step.get(1)) {
                     pathTimer.reset();
@@ -123,7 +135,6 @@ public class AutonomousSample extends OpMode {
     @Override
     public void init() {
         stop = false;
-        currentStepDrawn = 0;
         currentStepPlayed = 0;
         allHubs = hardwareMap.getAll(LynxModule.class);
 
