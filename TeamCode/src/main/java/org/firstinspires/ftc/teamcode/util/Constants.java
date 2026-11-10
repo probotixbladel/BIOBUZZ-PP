@@ -30,14 +30,16 @@ public class Constants {
     }
 
     public static class Shooter {
-        public static double GRAV_ACC = 9.81;
         public static double SHOOTER_ANGLE = 75;
-        public static double DELTA_HEIGHT = 1.39;
-        public static Pose HIVE_POS = new Pose(58, 54);
         public static double AIR_RES_COMP_MULT = 1.1;
         public static double FLYWHEEL_RADIUS = 0.1;
         public static double P = 1;
         public static double D = 0;
-        public static double F = 1;
+    }
+
+    public static class Field {
+        public static double GRAV_ACC = 9.81;
+        public static double DELTA_HEIGHT = 1.39;
+        public static Pose HIVE_POS = new Pose(58, 54);
     }
 }

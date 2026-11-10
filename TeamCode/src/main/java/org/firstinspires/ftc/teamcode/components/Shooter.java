@@ -31,20 +31,22 @@ public class Shooter {
             pid = Controller.pid(kp, 0, kd);
         }
 
-        double deltaX = Math.sqrt((comps.follower.pose().x() - Constants.Shooter.HIVE_POS.x()) * (comps.follower.pose().x() - Constants.Shooter.HIVE_POS.x())
-                                + (comps.follower.pose().y() - Constants.Shooter.HIVE_POS.y()) * (comps.follower.pose().y() - Constants.Shooter.HIVE_POS.y()));
+        double deltaX = Math.sqrt((comps.follower.pose().x() - Constants.Field.HIVE_POS.x()) * (comps.follower.pose().x() - Constants.Field.HIVE_POS.x())
+                                + (comps.follower.pose().y() - Constants.Field.HIVE_POS.y()) * (comps.follower.pose().y() - Constants.Field.HIVE_POS.y()));
 
         double alpha = Math.toRadians(Constants.Shooter.SHOOTER_ANGLE);
-        double targetV = (1 / (2 * Math.sin(alpha))) * Math.sqrt(-2 * Constants.Shooter.GRAV_ACC * Constants.Shooter.DELTA_HEIGHT + 2 * Constants.Shooter.GRAV_ACC * deltaX * Math.tan(alpha)
-                + Math.sqrt((2 * Constants.Shooter.GRAV_ACC * Constants.Shooter.DELTA_HEIGHT - 2 * Constants.Shooter.GRAV_ACC * deltaX * Math.tan(alpha))
-            * (2 * Constants.Shooter.GRAV_ACC * Constants.Shooter.DELTA_HEIGHT - 2 * Constants.Shooter.GRAV_ACC * deltaX * Math.tan(alpha))
-                + 8 * Constants.Shooter.GRAV_ACC * Constants.Shooter.GRAV_ACC * deltaX * deltaX * Math.tan(alpha) * Math.tan(alpha)))
+        double targetV = (1 / (2 * Math.sin(alpha))) * Math.sqrt(-2 * Constants.Field.GRAV_ACC * Constants.Field.DELTA_HEIGHT + 2 * Constants.Field.GRAV_ACC * deltaX * Math.tan(alpha)
+                + Math.sqrt((2 * Constants.Field.GRAV_ACC * Constants.Field.DELTA_HEIGHT - 2 * Constants.Field.GRAV_ACC * deltaX * Math.tan(alpha))
+            * (2 * Constants.Field.GRAV_ACC * Constants.Field.DELTA_HEIGHT - 2 * Constants.Field.GRAV_ACC * deltaX * Math.tan(alpha))
+                + 8 * Constants.Field.GRAV_ACC * Constants.Field.GRAV_ACC * deltaX * deltaX * Math.tan(alpha) * Math.tan(alpha)))
                 * Constants.Shooter.AIR_RES_COMP_MULT; // Source: Just trust me bro
 
+
+        double targetAngle = Math.atan2(Constants.Field.HIVE_POS.y() - comps.follower.pose().y(), Constants.Field.HIVE_POS.x() - comps.follower.pose().x());
         double targetVX = Math.cos(alpha) * targetV;
         double targetVY = Math.sin(alpha) * targetV;
-        double targetVXX = Math.cos(comps.follower.pose().heading()) * targetVX;
-        double targetVXY = Math.sin(comps.follower.pose().heading()) * targetVX;
+        double targetVXX = Math.cos(targetAngle) * targetVX;
+        double targetVXY = Math.sin(targetAngle) * targetVX;
 
         double vXX = targetVXX - comps.follower.velocity().vx;
         double vXY = targetVXY - comps.follower.velocity().vy;
