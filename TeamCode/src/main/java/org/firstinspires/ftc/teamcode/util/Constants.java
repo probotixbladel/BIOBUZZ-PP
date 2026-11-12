@@ -37,6 +37,13 @@ public class Constants {
         public static double D = 0;
     }
 
+    public static class Turret {
+        public static double P_A = 1;
+        public static double D_A = 0;
+        public static double P_B = 1;
+        public static double D_B = 0;
+    }
+
     public static class Field {
         public static double GRAV_ACC = 9.81;
         public static double DELTA_HEIGHT = 1.39;
