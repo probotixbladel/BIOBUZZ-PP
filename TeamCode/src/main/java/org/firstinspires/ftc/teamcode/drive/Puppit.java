@@ -36,6 +36,9 @@ public class Puppit extends OpMode {
     public static double INTAKE_POWER;
     public static double THROUGH_POWER;
     public static double GATE_POS;
+    public static double SHOOTER_SPEED = 0;
+    public static double TURRET_A_SPEED = 0;
+    public static double TURRET_B_SPEED = 0;
 
 
     @SuppressLint("SuspiciousIndentation")
@@ -57,13 +60,19 @@ public class Puppit extends OpMode {
     @SuppressLint("SuspiciousIndentation")
     @Override
     public void loop() {
-        Comps.update();
+        //Comps.update();
         Comps.intake.intake.setPower(INTAKE_POWER);
         Comps.through.through.setPower(THROUGH_POWER);
         Comps.gate.gate.setPosition(GATE_POS);
+        Comps.shooter.shooter.setVelocity(SHOOTER_SPEED);
+        Comps.turret.turreta.setPower(TURRET_A_SPEED);
+        Comps.turret.turretb.setPower(TURRET_B_SPEED);
+
         telemetryM.addData("Intake: ", INTAKE_POWER);
         telemetryM.addData("Through: ", THROUGH_POWER);
         telemetryM.addData("Gate: ", GATE_POS);
+        telemetryM.addData("Shooter: ", SHOOTER_SPEED);
+        telemetryM.addData("Turret a, b: ", new double[]{TURRET_A_SPEED, TURRET_B_SPEED});
         telemetryM.update();
     }
 }

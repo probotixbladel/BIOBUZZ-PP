@@ -12,7 +12,7 @@ public class Shooter {
     private HardwareMap hardwareMap;
     public DcMotorEx shooter;
     private ComponentShell comps;
-    private PIDController pid;
+    private Controller pid;
     private double kp;
     private double kd;
     private double kf;
@@ -25,10 +25,11 @@ public class Shooter {
     }
 
     public void update() {
-        if(kp != Constants.Shooter.P || kd != Constants.Shooter.D) {
+        if(kp != Constants.Shooter.P || kd != Constants.Shooter.D || kf != Constants.Shooter.F) {
             kp = Constants.Shooter.P;
             kd = Constants.Shooter.D;
-            pid = Controller.pid(kp, 0, kd);
+            kf = Constants.Shooter.F;
+            pid = Controller.pid(kp, 0, kd).plus(Controller.proportionalFeedforward(kf));
         }
 
         double deltaX = Math.sqrt((comps.follower.pose().x() - Constants.Field.HIVE_POS.x()) * (comps.follower.pose().x() - Constants.Field.HIVE_POS.x())

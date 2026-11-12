@@ -21,6 +21,8 @@ public class ComponentShell {
     public Throughput through;
     public Gate gate;
     public Detector detector;
+    public Shooter shooter;
+    public Turret turret;
     public Limelight limelight;
     public enum Alliance {
         BLUE,
@@ -39,6 +41,8 @@ public class ComponentShell {
         this.through = new Throughput(hwm);
         this.gate = new Gate(hwm);
         this.detector = new Detector(hwm);
+        this.turret = new Turret(hwm, this);
+        this.shooter = new Shooter(hwm, this);
     }
 
     @SuppressLint("SuspiciousIndentation")
@@ -48,17 +52,26 @@ public class ComponentShell {
         telemetryM.addData("detecting: ", detector.findBallNum());
         telemetryM.addData("Pos= ", follower.pose());
         telemetryM.addData("al: ", alliance);
+        telemetryM.addData("Turret angle: ", turret.angle());
+        telemetryM.addData("Turret targetangle: ", turret.targetAngle());
+        telemetryM.addData("Turret velCmd: ", turret.velCmd());
+        telemetryM.addData("Turretvel A", turret.servoVelA());
+        telemetryM.addData("Turretvel B", turret.servoVelB());
 
         intake.update();
         through.update();
         detector.update();
+        turret.update();
+        shooter.update();
     }
 
     public void updateTeleop(Gamepad gamepad1, Gamepad gamepad2) {
         this.update();
 
         if(gamepad2.left_trigger < 0.8) {
-            intake.state = Intake.intakeState.TAKE_IN;
+            if(detector.findBallNum() < 4) {
+                intake.state = Intake.intakeState.TAKE_IN;
+            }
         }
         else {
             intake.state = Intake.intakeState.TAKE_OUT;
