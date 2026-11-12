@@ -39,9 +39,6 @@ public class Constants {
     }
 
     public static class Turret {
-        // Paste these inside your existing Constants.Turret class (public static, same as P_A etc.).
-// You can delete the old P_A, D_A, P_B, D_B: the new code no longer uses them.
-// All numbers are STARTING POINTS, tune them in the order given in the message.
 
         // --- position loop: turret degrees of error -> turret deg/s command ---
         public static double POS_P = 6.0;
@@ -54,8 +51,8 @@ public class Constants {
         public static double VEL_D_B = 0.0;
 
         // --- feedforward per servo ---
-// kV: power per deg/s. About 1 / (servo's max deg/s). Example: 0.12 s per 60 deg = 500 deg/s -> 0.002
-// kS: power needed just to start moving (static friction)
+        // kV: power per deg/s. About 1 / (servo's max deg/s). Example: 0.12 s per 60 deg = 500 deg/s -> 0.002
+        // kS: power needed just to start moving (static friction)
         public static double KV_A = 0.002;
         public static double KV_B = 0.002;
         public static double KS_A = 0.03;
@@ -81,6 +78,9 @@ public class Constants {
     public static class Field {
         public static double GRAV_ACC = 9.81;
         public static double DELTA_HEIGHT = 1.39;
-        public static Pose HIVE_POS = new Pose(58, 54);
+        public static Pose HIVE_POS_RED_DOWN = new Pose(57, 54);
+        public static Pose HIVE_POS_RED_UP = new Pose(57, 93);
+        public static Pose HIVE_POS_BLUE_DOWN = new Pose(84, 54);
+        public static Pose HIVE_POS_BLUE_UP = new Pose(84, 93);
     }
 }

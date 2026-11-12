@@ -85,12 +85,29 @@ public class Turret {
 
         turretAngle = turretAngleFromEncoders(a, b) - Constants.Turret.ZERO_OFFSET;
 
-        // ---- where should the turret point? (your shooter math, unchanged) ----
+        // ---- where should the turret point? (your shooter math, unchanged) ---- // sassy claude
         Pose pose = comps.follower.pose();
-        double targetAngleGlobal = Math.atan2(Constants.Field.HIVE_POS.y() - pose.y(), Constants.Field.HIVE_POS.x() - pose.x());
+        Pose hivePos = new Pose(0, 0);
+        if (pose.y() > 72) {
+            if (comps.alliance == ComponentShell.Alliance.BLUE) {
+                hivePos = Constants.Field.HIVE_POS_BLUE_UP;
+            }
+            else {
+                hivePos = Constants.Field.HIVE_POS_RED_UP;
+            }
+        }
+        else {
+            if (comps.alliance == ComponentShell.Alliance.BLUE) {
+                hivePos = Constants.Field.HIVE_POS_BLUE_DOWN;
+            }
+            else {
+                hivePos = Constants.Field.HIVE_POS_RED_DOWN;
+            }
+        }
+        double targetAngleGlobal = Math.atan2(hivePos.y() - pose.y(), hivePos.x() - pose.x());
 
-        double deltaX = Math.sqrt((pose.x() - Constants.Field.HIVE_POS.x()) * (pose.x() - Constants.Field.HIVE_POS.x())
-                + (pose.y() - Constants.Field.HIVE_POS.y()) * (pose.y() - Constants.Field.HIVE_POS.y()));
+        double deltaX = Math.sqrt((pose.x() - hivePos.x()) * (pose.x() - hivePos.x())
+                + (pose.y() - hivePos.y()) * (pose.y() - hivePos.y()));
 
         double alpha = Math.toRadians(Constants.Shooter.SHOOTER_ANGLE);
         double targetVTotal = (1 / (2 * Math.sin(alpha))) * Math.sqrt(-2 * Constants.Field.GRAV_ACC * Constants.Field.DELTA_HEIGHT + 2 * Constants.Field.GRAV_ACC * deltaX * Math.tan(alpha)

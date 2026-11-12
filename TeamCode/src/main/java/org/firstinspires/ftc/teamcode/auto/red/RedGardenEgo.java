@@ -16,13 +16,13 @@ public class RedGardenEgo extends AutonomousSample {
         super.init();
 
 
-        Shoot(0);
+        Shoot(0, 5);
         MoveLinear(poseFac.of(8, 8, Math.toRadians(180)), 2, true);
         MoveCurve(poseFac.of(24, 120, Math.toRadians(200)), poseFac.of(48, 24, 0) ,4, true);
-        Shoot(0);
+        Shoot(0, 5);
         MoveCurve(poseFac.of(8, 96, Math.toRadians(180)), poseFac.of(6, 127, 0), 2, true);
         MoveLinear(poseFac.of(25, 120, Math.toRadians(180)), 2, true);
-        Shoot(0);
+        Shoot(0, 5);
         MoveLinear(poseFac.of(8, 120, Math.toRadians(180)), 2, true);
         End();
     }

@@ -73,8 +73,8 @@ public class AutonomousSample extends OpMode {
         newStep(Actions.FOLLOWPATH, time, waitTilFinished);
     }
 
-    public void Shoot(int pollenLeft) { // amount of pollen that need to be left in the robot after shooting (typically needs to be 0)
-        newStep(Actions.SHOOT, pollenLeft);
+    public void Shoot(int pollenLeft, double time) { // amount of pollen that need to be left in the robot after shooting (typically needs to be 0)
+        newStep(Actions.SHOOT, pollenLeft, time);
     }
 
     public void Pause(double time) {
@@ -91,7 +91,7 @@ public class AutonomousSample extends OpMode {
         switch((Actions) step.get(0)) {
             case SHOOT:
                 comps.gate.openGate();
-                if (comps.detector.findBallNum() <= (int) step.get(1)) {
+                if (comps.detector.findBallNum() <= (int) step.get(1) || pathTimer.seconds() > (double) step.get(2)) {
                     pathTimer.reset();
                     currentStepPlayed++;
                 }
