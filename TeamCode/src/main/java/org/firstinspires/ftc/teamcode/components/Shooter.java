@@ -55,11 +55,17 @@ public class Shooter {
                                 + (comps.follower.pose().y() - hivePos.y()) * (comps.follower.pose().y() - hivePos.y()));
 
         double alpha = Math.toRadians(Constants.Shooter.SHOOTER_ANGLE);
-        double targetV = (1 / (2 * Math.sin(alpha))) * Math.sqrt(-2 * Constants.Field.GRAV_ACC * Constants.Field.DELTA_HEIGHT + 2 * Constants.Field.GRAV_ACC * deltaX * Math.tan(alpha)
-                + Math.sqrt((2 * Constants.Field.GRAV_ACC * Constants.Field.DELTA_HEIGHT - 2 * Constants.Field.GRAV_ACC * deltaX * Math.tan(alpha))
-            * (2 * Constants.Field.GRAV_ACC * Constants.Field.DELTA_HEIGHT - 2 * Constants.Field.GRAV_ACC * deltaX * Math.tan(alpha))
-                + 8 * Constants.Field.GRAV_ACC * Constants.Field.GRAV_ACC * deltaX * deltaX * Math.tan(alpha) * Math.tan(alpha)))
-                * Constants.Shooter.AIR_RES_COMP_MULT; // Source: Just trust me bro
+        /*
+        * LUCKY YOU IM GONNA EXPLAIN MY MATH:
+        * -0.5 * G * T^2 + V * SIN(A) * T + DELTA_Y = 0
+        * T = (DELTA_X) / (V * COS(A))
+        * (-G * DELTA_X^2) / (2 * V^2 * COS^2(A)) + (V * SIN(A) * DELTA_X) / (V * COS(A)) + DELTA_Y = 0
+        * -G * DELTA_X^2 = (TAN(A) * DELTA_X - DELTA_Y) * 2 * V^2 * COS^2(A)
+        * SOOOOOO
+        * V = SQRT((-G * DELTA_X^2) / (2 * COS^2(A)(TAN(A) * DELTA_X - DELTA_Y)))
+         */
+        double targetV = Math.sqrt( (-Constants.Field.GRAV_ACC * deltaX * deltaX) / (2 * Math.cos(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE)) * Math.cos(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE))
+                * (Math.tan(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE)) * deltaX - Constants.Field.DELTA_HEIGHT))) * Constants.Shooter.AIR_RES_COMP_MULT; // Source: Just trust me bro
 
 
         double targetAngle = Math.atan2(hivePos.y() - comps.follower.pose().y(), hivePos.x() - comps.follower.pose().x());

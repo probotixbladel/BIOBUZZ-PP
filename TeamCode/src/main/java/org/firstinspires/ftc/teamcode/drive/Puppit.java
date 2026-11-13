@@ -73,6 +73,14 @@ public class Puppit extends OpMode {
         telemetryM.addData("Gate: ", GATE_POS);
         telemetryM.addData("Shooter: ", SHOOTER_SPEED);
         telemetryM.addData("Turret a, b: ", new double[]{TURRET_A_SPEED, TURRET_B_SPEED});
+        telemetryM.addData("detecting: ", Comps.detector.findBallNum());
+        telemetryM.addData("Pos= ", follower.pose());
+        telemetryM.addData("al: ", Comps.alliance);
+        telemetryM.addData("Turret angle: ", Comps.turret.angle());
+        telemetryM.addData("Turret targetangle: ", Comps.turret.targetAngle());
+        telemetryM.addData("Turret velCmd: ", Comps.turret.velCmd());
+        telemetryM.addData("Turretvel A", Comps.turret.servoVelA());
+        telemetryM.addData("Turretvel B", Comps.turret.servoVelB());
         telemetryM.update();
     }
 }
