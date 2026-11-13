@@ -17,6 +17,7 @@ public class Shooter {
     private double kp;
     private double kd;
     private double kf;
+    public double overrideOffset = 0;
     public Shooter(HardwareMap hwm, ComponentShell comps){
         this.hardwareMap = hwm;
         this.shooter = hardwareMap.get(DcMotorEx.class, "shooter");
@@ -77,7 +78,7 @@ public class Shooter {
         double vXX = targetVXX - comps.follower.velocity().vx;
         double vXY = targetVXY - comps.follower.velocity().vy;
 
-        double v = Math.sqrt(vXX * vXX + vXY * vXY + targetVY * targetVY);
+        double v = Math.sqrt(vXX * vXX + vXY * vXY + targetVY * targetVY) + overrideOffset;
 
         shooter.setVelocity(pid.calculate(toRpm(v), toRpm(v) - shooter.getVelocity()));
 

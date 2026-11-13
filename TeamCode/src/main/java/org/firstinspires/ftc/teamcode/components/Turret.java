@@ -51,6 +51,7 @@ public class Turret {
     private double targetAngle;
     private double turretVelCmd;
     private double lastTargetGlobal = 0;
+    public double overrideOffset = 0;
 
     public Turret(HardwareMap hwm, ComponentShell comps) {
         // the strings are the device names in the Robot Configuration: left unchanged on purpose
@@ -131,7 +132,7 @@ public class Turret {
 
         // field angle -> robot-relative turret angle (this was missing before), then pick the
         // equivalent angle (+-360k) nearest to where the turret is, inside the soft limits
-        double desired = Math.toDegrees(targetSOTMAngleGlobal - pose.heading());
+        double desired = Math.toDegrees(targetSOTMAngleGlobal - pose.heading()) + overrideOffset;
         targetAngle = pickTarget(desired, turretAngle);
 
         // ---- position loop: turret degrees -> turret deg/s ----
@@ -140,6 +141,10 @@ public class Turret {
         double omegaFF = -Constants.Turret.OMEGA_FF * Math.toDegrees(comps.follower.velocity().omega);
         double max = Constants.Turret.MAX_TURRET_VEL;
         turretVelCmd = clamp(posPID.calculate(0, error) + omegaFF, -max, max);
+        if (Constants.Turret.TEST_MODE) {   // square wave: +TEST_VEL, then -TEST_VEL, so the turret never hits a limit
+            boolean forward = (System.nanoTime() * 1e-9) % Constants.Turret.TEST_PERIOD < Constants.Turret.TEST_PERIOD / 2.0;
+            turretVelCmd = forward ? Constants.Turret.TEST_VEL : -Constants.Turret.TEST_VEL;
+        }
 
         // ---- speed loops: each servo tracks its own share of that speed ----
         turretRight.setPower(servoPower(velPID_Right, Constants.Turret.RATIO_RIGHT * turretVelCmd, velRight, Constants.Turret.KV_RIGHT, Constants.Turret.KS_RIGHT));

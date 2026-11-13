@@ -36,6 +36,7 @@ public class Constants {
         public static double P = 1;
         public static double D = 0;
         public static double F = 1;
+        public static double OVERRIDE_CHANGE = 5;
     }
 
     public static class Turret {
@@ -73,6 +74,10 @@ public class Constants {
         public static final double RATIO_LEFT = 5.0 / 4.0;    // left encoder turns per turret turn (must be the LARGER one)
         public static final double VERNIER_GAIN = 1.0 / (RATIO_LEFT - RATIO_RIGHT);   // = 20
         public static final double VEL_FILTER = 0.3;          // 0..1, higher = less smoothing of measured speed
+        public static boolean TEST_MODE = false;
+        public static double TEST_VEL = 60;      // turret deg/s
+        public static double TEST_PERIOD = 3.0;  // seconds for a full back-and-forth
+        public static double OVERRIDE_CHANGE = 10;
     }
 
     public static class Field {
