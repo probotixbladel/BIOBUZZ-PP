@@ -65,13 +65,13 @@ public class Puppit extends OpMode {
         Comps.through.through.setPower(THROUGH_POWER);
         Comps.gate.gate.setPosition(GATE_POS);
         Comps.shooter.shooter.setVelocity(SHOOTER_SPEED);
-        Comps.turret.turretLeft.setPower(TURRET_A_SPEED);
-        Comps.turret.turretRight.setPower(TURRET_B_SPEED);
+        //Comps.turret.turretLeft.setPower(TURRET_A_SPEED);
+        //Comps.turret.turretRight.setPower(TURRET_B_SPEED);
 
         telemetryM.addData("Intake: ", INTAKE_POWER);
         telemetryM.addData("Through: ", THROUGH_POWER);
         telemetryM.addData("Gate: ", GATE_POS);
-        telemetryM.addData("Shooter: ", SHOOTER_SPEED);
+        /*telemetryM.addData("Shooter: ", SHOOTER_SPEED);
         telemetryM.addData("Turret a, b: ", new double[]{TURRET_A_SPEED, TURRET_B_SPEED});
         telemetryM.addData("detecting: ", Comps.detector.findBallNum());
         telemetryM.addData("Pos= ", follower.pose());
@@ -80,7 +80,7 @@ public class Puppit extends OpMode {
         telemetryM.addData("Turret targetangle: ", Comps.turret.targetAngle());
         telemetryM.addData("Turret velCmd: ", Comps.turret.velCmd());
         telemetryM.addData("Turretvel Left", Comps.turret.servoVelLeft());
-        telemetryM.addData("Turretvel Right", Comps.turret.servoVelRight());
+        telemetryM.addData("Turretvel Right", Comps.turret.servoVelRight());*/
         telemetryM.update();
     }
 }

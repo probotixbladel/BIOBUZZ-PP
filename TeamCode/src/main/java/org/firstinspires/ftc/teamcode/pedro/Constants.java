@@ -22,9 +22,9 @@ public class Constants {
                 c.frontRightName.set("rightFront");
                 c.backRightName.set("rightBack");
 
-                c.frontLeftDirection.set(DcMotorSimple.Direction.FORWARD);
-                c.backLeftDirection.set(DcMotorSimple.Direction.FORWARD);
-                c.frontRightDirection.set(DcMotorSimple.Direction.REVERSE);
+                c.frontLeftDirection.set(DcMotorSimple.Direction.REVERSE);
+                c.backLeftDirection.set(DcMotorSimple.Direction.REVERSE);
+                c.frontRightDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.backRightDirection.set(DcMotorSimple.Direction.FORWARD);
 
                 c.manualBrakeMode.set(true);
@@ -34,8 +34,8 @@ public class Constants {
     public static PinpointConfig localizerConfig = new PinpointConfig(
             c -> {
                 c.name.set("pinpoint");
-                c.xPodOffset.set(-0.18614598146573766);
-                c.yPodOffset.set(-5.935795100655143);
+                c.xPodOffset.set(2.5937108918437812);
+                c.yPodOffset.set(-3.7994216558501477);
                 c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
                 c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
             }

@@ -28,7 +28,7 @@ public class Throughput {
         this.hardwareMap = hwm;
 
         this.through = hardwareMap.get(DcMotorEx.class, "through");
-        this.through.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.through.setDirection(DcMotorSimple.Direction.FORWARD);
         this.through.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 

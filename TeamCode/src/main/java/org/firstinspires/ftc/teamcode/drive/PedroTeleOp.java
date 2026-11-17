@@ -72,7 +72,7 @@ public class PedroTeleOp extends OpMode{
             hub.clearBulkCache();
         }
 
-        if (gamepad1.dpad_up) {
+        if (gamepad1.dpadUpWasPressed()) {
             robotCentric = !robotCentric;
         }
 

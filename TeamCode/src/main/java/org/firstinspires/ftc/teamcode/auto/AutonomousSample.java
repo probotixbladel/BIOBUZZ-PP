@@ -91,7 +91,7 @@ public class AutonomousSample extends OpMode {
         switch((Actions) step.get(0)) {
             case SHOOT:
                 comps.gate.openGate();
-                if (comps.detector.findBallNum() <= (int) step.get(1) || pathTimer.seconds() > (double) step.get(2)) {
+                if (/*comps.detector.findBallNum() <= (int) step.get(1) ||*/ pathTimer.seconds() > (double) step.get(2)) {
                     pathTimer.reset();
                     currentStepPlayed++;
                 }

@@ -5,6 +5,7 @@ import com.pedropathing.controllers.PIDController;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.util.Constants;
@@ -18,9 +19,11 @@ public class Shooter {
     private double kd;
     private double kf;
     public double overrideOffset = 0;
+    private double prevV = 0;
     public Shooter(HardwareMap hwm, ComponentShell comps){
         this.hardwareMap = hwm;
         this.shooter = hardwareMap.get(DcMotorEx.class, "shooter");
+        this.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         this.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         this.comps = comps;
@@ -53,9 +56,10 @@ public class Shooter {
         }
 
         double deltaX = Math.sqrt((comps.follower.pose().x() - hivePos.x()) * (comps.follower.pose().x() - hivePos.x())
-                                + (comps.follower.pose().y() - hivePos.y()) * (comps.follower.pose().y() - hivePos.y()));
+                                + (comps.follower.pose().y() - hivePos.y()) * (comps.follower.pose().y() - hivePos.y())) * 0.0254;
 
         double alpha = Math.toRadians(Constants.Shooter.SHOOTER_ANGLE);
+        double v = prevV;
         /*
         * LUCKY YOU IM GONNA EXPLAIN MY MATH:
         * -0.5 * G * T^2 + V * SIN(A) * T + DELTA_Y = 0
@@ -65,27 +69,35 @@ public class Shooter {
         * SOOOOOO
         * V = SQRT((-G * DELTA_X^2) / (2 * COS^2(A)(TAN(A) * DELTA_X - DELTA_Y)))
          */
-        double targetV = Math.sqrt( (-Constants.Field.GRAV_ACC * deltaX * deltaX) / (2 * Math.cos(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE)) * Math.cos(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE))
-                * (Math.tan(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE)) * deltaX - Constants.Field.DELTA_HEIGHT))) * Constants.Shooter.AIR_RES_COMP_MULT; // Source: Just trust me bro
+        if ((2 * Math.cos(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE)) * Math.cos(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE))
+                * (Math.tan(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE)) * deltaX - Constants.Field.DELTA_HEIGHT) > 0)) {
+            double targetV = Math.sqrt((-Constants.Field.GRAV_ACC * deltaX * deltaX) / (2 * Math.cos(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE)) * Math.cos(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE))
+                    * (Math.tan(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE)) * deltaX - Constants.Field.DELTA_HEIGHT))) * Constants.Shooter.AIR_RES_COMP_MULT;
 
 
-        double targetAngle = Math.atan2(hivePos.y() - comps.follower.pose().y(), hivePos.x() - comps.follower.pose().x());
-        double targetVX = Math.cos(alpha) * targetV;
-        double targetVY = Math.sin(alpha) * targetV;
-        double targetVXX = Math.cos(targetAngle) * targetVX;
-        double targetVXY = Math.sin(targetAngle) * targetVX;
+            double targetAngle = Math.atan2(hivePos.y() - comps.follower.pose().y(), hivePos.x() - comps.follower.pose().x());
+            double targetVX = Math.cos(alpha) * targetV;
+            double targetVY = Math.sin(alpha) * targetV;
+            double targetVXX = Math.cos(targetAngle) * targetVX;
+            double targetVXY = Math.sin(targetAngle) * targetVX;
 
-        double vXX = targetVXX - comps.follower.velocity().vx;
-        double vXY = targetVXY - comps.follower.velocity().vy;
+            double vXX = targetVXX - comps.follower.velocity().vx * 0.0254;
+            double vXY = targetVXY - comps.follower.velocity().vy * 0.0254;
 
-        double v = Math.sqrt(vXX * vXX + vXY * vXY + targetVY * targetVY) + overrideOffset;
-
-        shooter.setVelocity(pid.calculate(toRpm(v), toRpm(v) - shooter.getVelocity()));
+            v = Math.sqrt(vXX * vXX + vXY * vXY + targetVY * targetVY) + overrideOffset;
+            prevV = v;
+        }
+        double shooterVel = pid.calculate(toTicksPerSec(v), toTicksPerSec(v) - shooter.getVelocity());
+        comps.telemetryM.addData("targetV: ", toTicksPerSec(v));
+        shooter.setVelocity(shooterVel);
+        comps.telemetryM.addData("currentV: ", shooter.getVelocity());
 
     }
 
-    private double toRpm(double v){
-        return (v / ( 2 * Math.PI * Constants.Shooter.FLYWHEEL_RADIUS)) * 60;
+    private double toTicksPerSec(double v) {               // m/s
+        double wheelRevPerSec =  v / (2 * Math.PI * Constants.Shooter.FLYWHEEL_RADIUS); // radius in m -> rev/s
+        double motorRevPerSec = wheelRevPerSec * Constants.Shooter.GEAR;                  // motor rev/s
+        return motorRevPerSec * Constants.Shooter.TICKS_PER_REV;                          // ticks/s
     }
 
 }

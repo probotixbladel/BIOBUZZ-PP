@@ -55,10 +55,10 @@ public class Turret {
 
     public Turret(HardwareMap hwm, ComponentShell comps) {
         // the strings are the device names in the Robot Configuration: left unchanged on purpose
-        this.turretRight = hwm.get(CRServo.class, "turreta");
-        this.turretLeft = hwm.get(CRServo.class, "turretb");
-        this.anIn_Right = hwm.get(AnalogInput.class, "anIna");
-        this.anIn_Left = hwm.get(AnalogInput.class, "anInb");
+        this.turretRight = hwm.get(CRServo.class, "turretRight");
+        this.turretLeft = hwm.get(CRServo.class, "turretLeft");
+        this.anIn_Right = hwm.get(AnalogInput.class, "anInRight");
+        this.anIn_Left = hwm.get(AnalogInput.class, "anInLeft");
 
         turretLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         this.comps = comps;
@@ -69,8 +69,8 @@ public class Turret {
         updateGains();
 
         // ---- read encoders (degrees, 0..360, sign-corrected so both increase with turret angle) ----
-        double right = wrap360(Constants.Turret.ENC_DIR_RIGHT * voltsToDeg(anIn_Right));
-        double left = wrap360(Constants.Turret.ENC_DIR_LEFT * voltsToDeg(anIn_Left));
+        double right = wrap360(Constants.Turret.ENC_DIR_RIGHT * voltsToDeg(anIn_Right) - Constants.Turret.OFFSET_RIGHT);
+        double left  = wrap360(Constants.Turret.ENC_DIR_LEFT  * voltsToDeg(anIn_Left)  - Constants.Turret.OFFSET_LEFT);
 
         long now = System.nanoTime();
         double dt = (now - lastTimeNs) * 1e-9;
@@ -162,6 +162,8 @@ public class Turret {
     public double velCmd() { return turretVelCmd; }
     public double servoVelRight() { return velRight; }
     public double servoVelLeft() { return velLeft; }
+    public double rightDeg() { return lastRight; }
+    public double leftDeg() { return lastLeft; }
 
     // ---------------------------------------------------------------------------------------
 

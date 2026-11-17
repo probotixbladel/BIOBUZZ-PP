@@ -38,11 +38,11 @@ public class ComponentShell {
         this.follower = flw;
         this.telemetryM = tm;
         this.singlePlayer = single;
-        this.limelight = new Limelight(hwm, tm, flw, pf);
+        //this.limelight = new Limelight(hwm, tm, flw, pf);
         this.intake = new Intake(hwm);
         this.through = new Throughput(hwm);
         this.gate = new Gate(hwm);
-        this.detector = new Detector(hwm);
+        //this.detector = new Detector(hwm);
         this.turret = new Turret(hwm, this);
         this.shooter = new Shooter(hwm, this);
     }
@@ -50,8 +50,8 @@ public class ComponentShell {
     @SuppressLint("SuspiciousIndentation")
     public void update() {
 
-        limelight.update();
-        telemetryM.addData("detecting: ", detector.findBallNum());
+        //limelight.update();
+        //telemetryM.addData("detecting: ", detector.findBallNum());
         telemetryM.addData("Pos= ", follower.pose());
         telemetryM.addData("al: ", alliance);
         telemetryM.addData("Turret angle: ", turret.angle());
@@ -59,59 +59,87 @@ public class ComponentShell {
         telemetryM.addData("Turret velCmd: ", turret.velCmd());
         telemetryM.addData("Turretvel A", turret.servoVelLeft());
         telemetryM.addData("Turretvel B", turret.servoVelRight());
+        telemetryM.addData("RightDeg: ", turret.rightDeg());
+        telemetryM.addData("LeftDeg: ", turret.leftDeg());
 
         intake.update();
         through.update();
-        detector.update();
+        //detector.update();
         turret.update();
         shooter.update();
     }
 
     public void updateTeleop(Gamepad gamepad1, Gamepad gamepad2) {
         this.update();
-
-        if(gamepad2.left_bumper) {
-            intake.state = Intake.intakeState.TAKE_OUT;
-            if (detector.findBallNum() > 2) {
+        if(!singlePlayer) {
+            if (gamepad2.left_bumper) {
+                intake.state = Intake.intakeState.TAKE_OUT;
                 through.state = Throughput.throughState.OUT_THROUGH;
+            /*if (detector.findBallNum() < 2) {
             }
             else {
                 through.state = Throughput.throughState.STATIC_THROUGH;
-            }
-        }
-        else if(gamepad2.left_trigger > 0.2){
-            intake.state = Intake.intakeState.TAKE_IN;
-            if (detector.findBallNum() > 2) {
+            }*/
+            } else if (gamepad2.left_trigger > 0.2) {
+                intake.state = Intake.intakeState.TAKE_IN;
                 through.state = Throughput.throughState.IN_THROUGH;
+            /*if (detector.findBallNum() < 2) {
             }
             else {
                 through.state = Throughput.throughState.STATIC_THROUGH;
+            }*/
+            } else {
+                intake.state = Intake.intakeState.TAKE_STATIC;
+                through.state = Throughput.throughState.STATIC_THROUGH;
             }
+
+            if (gamepad2.right_trigger > 0.2) {
+                gate.openGate();
+            } else {
+                gate.closeGate();
+            }
+
+            /*/ OVERRIDES:
+            if(gamepad2.dpadLeftWasPressed()) {
+                turret.overrideOffset -= Constants.Turret.OVERRIDE_CHANGE;
+            }
+            else if(gamepad2.dpadRightWasPressed()) {
+                turret.overrideOffset += Constants.Turret.OVERRIDE_CHANGE;
+            }
+            if (gamepad2.dpadUpWasPressed()) {
+                shooter.overrideOffset += Constants.Turret.OVERRIDE_CHANGE;
+            }
+            else if(gamepad2.dpadDownWasPressed()) {
+                shooter.overrideOffset -= Constants.Turret.OVERRIDE_CHANGE;
+            }*/
         }
         else {
-            intake.state = Intake.intakeState.TAKE_STATIC;
-            through.state = Throughput.throughState.STATIC_THROUGH;
-        }
+            if (gamepad1.left_bumper) {
+                intake.state = Intake.intakeState.TAKE_OUT;
+                through.state = Throughput.throughState.OUT_THROUGH;
+            /*if (detector.findBallNum() < 2) {
+            }
+            else {
+                through.state = Throughput.throughState.STATIC_THROUGH;
+            }*/
+            } else if (gamepad1.left_trigger > 0.2) {
+                intake.state = Intake.intakeState.TAKE_IN;
+                through.state = Throughput.throughState.IN_THROUGH;
+            /*if (detector.findBallNum() < 2) {
+            }
+            else {
+                through.state = Throughput.throughState.STATIC_THROUGH;
+            }*/
+            } else {
+                intake.state = Intake.intakeState.TAKE_STATIC;
+                through.state = Throughput.throughState.STATIC_THROUGH;
+            }
 
-        if(gamepad2.right_trigger > 0.2) {
-            gate.openGate();
-        }
-        else {
-            gate.closeGate();
-        }
-
-        // OVERRIDES:
-        if(gamepad2.dpadLeftWasPressed()) {
-            turret.overrideOffset -= Constants.Turret.OVERRIDE_CHANGE;
-        }
-        else if(gamepad2.dpadRightWasPressed()) {
-            turret.overrideOffset += Constants.Turret.OVERRIDE_CHANGE;
-        }
-        if (gamepad2.dpadUpWasPressed()) {
-            shooter.overrideOffset += Constants.Turret.OVERRIDE_CHANGE;
-        }
-        else if(gamepad2.dpadDownWasPressed()) {
-            shooter.overrideOffset -= Constants.Turret.OVERRIDE_CHANGE;
+            if (gamepad1.right_trigger > 0.2) {
+                gate.openGate();
+            } else {
+                gate.closeGate();
+            }
         }
     }
 }

@@ -5,18 +5,21 @@ import com.pedropathing.math.Pose;
 
 @Configurable
 public class Constants {
+    @Configurable
     public static class Intake {
         public static double INTAKE_POWER = 0.8;
         public static double STATIC_POWER = 0;
         public static double OUTTAKE_POWER = -0.8;
     }
 
+    @Configurable
     public static class Throughput {
         public static double INTHROUGH_POWER = 0.8;
         public static double STATIC_POWER = 0;
         public static double OUTTHROUGH_POWER = -0.8;
     }
 
+    @Configurable
     public static class Limelight {
         public static double HEIGHT = 8.976378; // In inches the height from the floor to the lens
         public static double FORWARD_OFFSET = 7.677165; // In inches the offset of the limelight, forward is positive, backward is negative
@@ -24,46 +27,53 @@ public class Constants {
         public static double ANGLE = 65; // In degrees the angle between the vertical and the direction of the lens
     }
 
+    @Configurable
     public static class Gate {
-        public static double CLOSE_POS = 0;
-        public static double OPEN_POS = 0;
+        public static double CLOSE_POS = 0.6;
+        public static double OPEN_POS = 0.35;
     }
 
+    @Configurable
     public static class Shooter {
+        public static final double TICKS_PER_REV = 28;
         public static double SHOOTER_ANGLE = 75;
-        public static double AIR_RES_COMP_MULT = 1.1;
+        public static double AIR_RES_COMP_MULT = 4.7;
         public static double FLYWHEEL_RADIUS = 0.1;
-        public static double P = 1;
-        public static double D = 0;
-        public static double F = 1;
+        public static double P = 20;
+        public static double D = 0.5;
+        public static double F = 0.0002;
+        public static double GEAR = (double) 36 / 30;
         public static double OVERRIDE_CHANGE = 5;
     }
 
+    @Configurable
     public static class Turret {
 
+        public static double OFFSET_LEFT = 192.4363636363637;
+        public static double OFFSET_RIGHT = 230.72727272727275;
         // --- position loop: turret degrees of error -> turret deg/s command ---
-        public static double POS_P = 6.0;
+        public static double POS_P = 5.96;
         public static double POS_D = 0.0;
 
         // --- speed loops (one per servo): servo deg/s of error -> power ---
-        public static double VEL_P_RIGHT = 0.001;
+        public static double VEL_P_RIGHT = 0;
         public static double VEL_D_RIGHT = 0.0;
-        public static double VEL_P_LEFT = 0.001;
+        public static double VEL_P_LEFT = 0.00;
         public static double VEL_D_LEFT = 0.0;
 
         // --- feedforward per servo ---
         // kV: power per deg/s. About 1 / (servo's max deg/s). Example: 0.12 s per 60 deg = 500 deg/s -> 0.002
         // kS: power needed just to start moving (static friction)
-        public static double KV_RIGHT = 0.002;
-        public static double KV_LEFT = 0.002;
-        public static double KS_RIGHT = 0.03;
-        public static double KS_LEFT = 0.03;
+        public static double KV_RIGHT = 0.00047;
+        public static double KV_LEFT = 0.00047;
+        public static double KS_RIGHT = 0.073;
+        public static double KS_LEFT = 0.073;
 
         // --- limits and geometry ---
         public static double MAX_TURRET_VEL = 150;      // deg/s, keep low for the first tests
-        public static double MIN_ANGLE = -200;          // soft limits, degrees, robot-relative (0 = facing front)
-        public static double MAX_ANGLE = 200;
-        public static double ZERO_OFFSET = 0;           // vernier angle when the turret faces robot front
+        public static double MIN_ANGLE = -310;          // soft limits, degrees, robot-relative (0 = facing front)
+        public static double MAX_ANGLE = 0;
+        public static double ZERO_OFFSET = 180;           // vernier angle when the turret faces robot front
         public static double OMEGA_FF = 1.0;            // 1 = counter-rotate against robot spin, 0 = off
 
         // --- signs: must be +1 or -1 so BOTH encoder angles INCREASE when the turret turns counter-clockwise ---
@@ -75,13 +85,14 @@ public class Constants {
         public static final double VERNIER_GAIN = 1.0 / (RATIO_LEFT - RATIO_RIGHT);   // = 20
         public static final double VEL_FILTER = 0.3;          // 0..1, higher = less smoothing of measured speed
         public static boolean TEST_MODE = false;
-        public static double TEST_VEL = 60;      // turret deg/s
+        public static double TEST_VEL = 30;      // turret deg/s
         public static double TEST_PERIOD = 3.0;  // seconds for a full back-and-forth
         public static double OVERRIDE_CHANGE = 10;
     }
 
+    @Configurable
     public static class Field {
-        public static double GRAV_ACC = 9.81;
+        public static double GRAV_ACC = -9.81;
         public static double DELTA_HEIGHT = 1.39;
         public static Pose HIVE_POS_RED_DOWN = new Pose(57, 54);
         public static Pose HIVE_POS_RED_UP = new Pose(57, 93);
