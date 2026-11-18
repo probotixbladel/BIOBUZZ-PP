@@ -54,13 +54,6 @@ public class ComponentShell {
         //telemetryM.addData("detecting: ", detector.findBallNum());
         telemetryM.addData("Pos= ", follower.pose());
         telemetryM.addData("al: ", alliance);
-        telemetryM.addData("Turret angle: ", turret.angle());
-        telemetryM.addData("Turret targetangle: ", turret.targetAngle());
-        telemetryM.addData("Turret velCmd: ", turret.velCmd());
-        telemetryM.addData("Turretvel A", turret.servoVelLeft());
-        telemetryM.addData("Turretvel B", turret.servoVelRight());
-        telemetryM.addData("RightDeg: ", turret.rightDeg());
-        telemetryM.addData("LeftDeg: ", turret.leftDeg());
 
         intake.update();
         through.update();
