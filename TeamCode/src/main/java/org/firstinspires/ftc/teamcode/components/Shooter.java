@@ -27,6 +27,7 @@ public class Shooter {
         this.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         this.comps = comps;
+        pid = Controller.pid(kp, 0, kd).plus(Controller.proportionalFeedforward(kf));
     }
 
     public void update() {

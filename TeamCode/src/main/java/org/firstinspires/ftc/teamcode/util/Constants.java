@@ -48,14 +48,17 @@ public class Constants {
 
     @Configurable
     public static class Turret {
-        public static double ENC_DIR_LEFT = 1;
-        public static double ENC_DIR_RIGHT = 1;
-        public static double MIN_ANGLE = -310;          // soft limits, degrees, robot-relative (0 = facing front)
-        public static double MAX_ANGLE = 0;
-        public static double ZERO_OFFSET = 180;
+        public static double ENC_DIR_LEFT = -1;
+        public static double ENC_DIR_RIGHT = 1; // might be wrong but idgaf
+        public static double MIN_ANGLE = -315;          // soft limits, degrees, robot-relative (0 = facing front)
+        public static double MAX_ANGLE = 315;
+        public static double ZERO_OFFSET = 360; // this shi is measured
 
-        public static final double RATIO_RIGHT = 6.0 / 5.0;   // right encoder turns per turret turn
-        public static final double RATIO_LEFT = 5.0 / 4.0;    // left encoder turns per turret turn
+        public static final double RATIO_RIGHT = 5.0 / 6.0; // if turret moves 5 times encoder moves 6
+        public static final double RATIO_LEFT = 4.0 / 5.0;
+        public static double P = 0.01;
+        public static double D = 0;
+        public static double F = 0.00015;
         public static double OVERRIDE_CHANGE = 10;
     }
 
