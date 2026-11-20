@@ -49,7 +49,6 @@ public class Turret {
             kf = Constants.Turret.F;
             pid = Controller.pid(kp, 0, kd).plus(Controller.proportionalFeedforward(kf));
         }
-        comps.telemetryM.addData("turretAngle: ", wheelPosition(anIn_Right, anIn_Left));
 
         Pose pose = comps.follower.pose();
         Pose hivePos = new Pose(0, 0);
@@ -71,19 +70,23 @@ public class Turret {
         }
         double currentAngle = wrap360(wheelPosition(anIn_Right, anIn_Left) - Constants.Turret.MIN_ANGLE);
         double targetAngle = wrap360(wrap360(Math.toDegrees(Math.atan2(hivePos.y() - pose.y(), hivePos.x() - pose.x())) - Math.toDegrees(pose.heading())) - Constants.Turret.MIN_ANGLE);
-        comps.telemetryM.addData("TargetRel: ", wrap360(Math.toDegrees(Math.atan2(hivePos.y() - pose.y(), hivePos.x() - pose.x())) - Math.toDegrees(pose.heading())));
         double maxNorm = wrap360(wrap360(Constants.Turret.MAX_ANGLE) - Constants.Turret.MIN_ANGLE);
+        comps.telemetryM.addData("turretAngle: ", currentAngle);
+        comps.telemetryM.addData("targeRel: ", targetAngle);
         comps.telemetryM.addData("can turret: ", targetAngle < maxNorm);
-
-        double target = Math.min(maxNorm, targetAngle);
+        double target = 0;
         if (targetAngle < maxNorm) {
-            double maxRatio = Math.max(Constants.Turret.RATIO_RIGHT, Constants.Turret.RATIO_LEFT);
-            double rightScale = Constants.Turret.RATIO_RIGHT / maxRatio;   // 1.0
-            double leftScale = Constants.Turret.RATIO_LEFT / maxRatio;    // 0.96
-            double calc = pid.calculate(targetAngle, targetAngle - currentAngle);
-            turretRight.setPower(calc * rightScale);
-            turretLeft.setPower(calc * leftScale);
+            target = targetAngle;
         }
+        else {
+            target = wrap360(90 - Constants.Turret.MIN_ANGLE);
+        }
+        double maxRatio = Math.max(Constants.Turret.RATIO_RIGHT, Constants.Turret.RATIO_LEFT);
+        double rightScale = Constants.Turret.RATIO_RIGHT / maxRatio;   // 1.0
+        double leftScale = Constants.Turret.RATIO_LEFT / maxRatio;    // 0.96
+        double calc = -pid.calculate(target, target - currentAngle);
+        turretRight.setPower(calc * rightScale);
+        turretLeft.setPower(calc * leftScale);
     }
 
     private double wheelPosition(AnalogInput rightIn, AnalogInput leftIn){
